@@ -16,7 +16,7 @@ Imports:
   tidyr,
   readr,
   forcats,
-  purr,
+  purrr,
   tibble,
   readxl,
   DBI
