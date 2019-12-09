@@ -710,7 +710,7 @@ dbWriteTable(school_db, "forward_exam", forward_exam, overwrite = TRUE)
 tables <- dbListTables(school_db)
 
 for(i in 1:length(tables)) {
-  saveRDS(dbReadTable(school_db, tables[i]), paste("C:/Users/Spencer/OneDrive - Schools That Can Milwaukee/Data & Impact/R Files/wisconsink12/imports/",
+  saveRDS(dbReadTable(school_db, tables[i]), paste("imports/",
                                              tables[i], ".rds", sep = ""))
 }
 
@@ -720,7 +720,7 @@ report_cards <- readRDS("imports/report_cards.rds")
 forward_exam <- readRDS("imports/forward_exam.rds")
 
 save(list = c("schools", "enrollment", "report_cards", "forward_exam"),
-     file = "C:/Users/Spencer/OneDrive - Schools That Can Milwaukee/Data & Impact/R Files/wisconsink12/data/school_data.RData")
+     file = "data/school_data.RData")
 
 dbDisconnect(school_db)
 
