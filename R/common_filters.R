@@ -10,14 +10,15 @@
 #' excluded from \code{wi_rc}.
 #' @import dplyr
 #' @importFrom magrittr %>%
-#' @export
+#' @export make_mke_schools
+#' @export make_mke_rc
+#' @export make_wi_rc
 make_mke_schools <- function() {
   mke_schools <<- schools %>%
     filter(city == "Milwaukee" & (district_name == "Milwaukee" | accurate_agency_type != "Private School") & locale_description != "Suburb")
 }
 
 #' @describeIn make_mke_schools Make a dataframe of Milwaukee schools' Report Card data.
-#' @export
 make_mke_rc <- function(private_type = "choice") {
   make_mke_schools()
 
@@ -37,7 +38,6 @@ make_mke_rc <- function(private_type = "choice") {
 }
 
 #' @describeIn make_mke_schools Make a dataframe of Wisconsin schools' Report Card data.
-#' @export
 make_wi_rc <- function(exclude_milwaukee = TRUE, private_type = "choice") {
   make_mke_schools()
 
