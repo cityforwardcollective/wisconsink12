@@ -17,6 +17,7 @@ make_mke_schools <- function() {
 }
 
 #' @describeIn make_mke_schools Make a dataframe of Milwaukee schools' Report Card data.
+#' @export
 make_mke_rc <- function(private_type = "choice") {
   make_mke_schools()
 
@@ -36,6 +37,7 @@ make_mke_rc <- function(private_type = "choice") {
 }
 
 #' @describeIn make_mke_schools Make a dataframe of Wisconsin schools' Report Card data.
+#' @export
 make_wi_rc <- function(exclude_milwaukee = TRUE, private_type = "choice") {
   make_mke_schools()
 
