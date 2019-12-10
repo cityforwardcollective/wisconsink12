@@ -1,4 +1,4 @@
-#' Startup message when package is attached.
+# Startup message when package is attached.
 
 .x <- load("data/school_data.RData")
 
