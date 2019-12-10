@@ -1,8 +1,11 @@
 #' Make common filterd dataframes from \code{wisconsink12} data.
 #'
-#' \code{make_mke_schools} filters the \code{schools} data for
+#' \code{make_mke_schools} Filters the \code{schools} data for
 #'   schools in the city of Milwaukee.
-#'
+#' \code{make_mke_rc} Filters the \code{report_cards} data for
+#'   schools in the city of Milwaukee.
+#' \code{make_wi_rc} Filters the \code{report_cards} data for
+#'   school in Wisconsin, either including or excluding Milwaukee.
 #'
 #' @param private_type Select which type of report card to be included for choice schools.
 #' Options are 'choice' for the 'Private - Choice Students' and 'all' for 'Private - All Students'

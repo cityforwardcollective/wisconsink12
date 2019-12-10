@@ -15,6 +15,10 @@ report card types.}
 excluded from \code{wi_rc}.}
 }
 \description{
-\code{make_mke_schools} filters the \code{schools} data for
+\code{make_mke_schools} Filters the \code{schools} data for
   schools in the city of Milwaukee.
+\code{make_mke_rc} Filters the \code{report_cards} data for
+  schools in the city of Milwaukee.
+\code{make_wi_rc} Filters the \code{report_cards} data for
+  school in Wisconsin, either including or excluding Milwaukee.
 }
