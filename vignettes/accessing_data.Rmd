@@ -57,3 +57,4 @@ library(wisconsink12)
 str(schools)
 ```
 
+Then
