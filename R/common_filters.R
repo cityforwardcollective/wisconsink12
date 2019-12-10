@@ -44,16 +44,24 @@ make_wi_rc <- function(exclude_milwaukee = TRUE, private_type = "choice") {
   if(exclude_milwaukee == TRUE) {
     wi_rc <<- report_cards %>%
         filter(!dpi_true_id %in% mke_schools$dpi_true_id)
+
+    message("Excluding Milwaukee schools.")
   } else {
     wi_rc <<- report_cards
+
+    message("Including Milwaukee schools.")
   }
 
   if(private_type == "choice") {
     wi_rc <<- wi_rc %>%
       filter(report_card_type == "Private - Choice Students")
+
+    message("Choosing 'Private - Choice Students' report card type for private schools.")
   } else if(private_type == "all") {
     wi_rc <<- wi_rc %>%
     filter(report_card_type == "Private - All Students")
+
+    message("Choosing 'Private - All Students' report card type for private schools.")
   } else {
     stop("Did you specify 'choice' or 'all' for private_type?")
   }
