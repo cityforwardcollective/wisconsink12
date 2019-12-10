@@ -1,15 +1,11 @@
-#' Make common filterd dataframes from \code{wisconsink12} data.
+#' Make common filtered dataframes from \code{wisconsink12} data.
 #'
-#' \code{make_mke_schools} Filters the \code{schools} data for
-#'   schools in the city of Milwaukee.
-#' \code{make_mke_rc} Filters the \code{report_cards} data for
-#'   schools in the city of Milwaukee.
-#' \code{make_wi_rc} Filters the \code{report_cards} data for
-#'   school in Wisconsin, either including or excluding Milwaukee.
+#' Filters the \code{schools} dataframe for common slices of data,
+#' such as city of Milwaukee schools and their report cards.
 #'
-#' @param private_type Select which type of report card to be included for choice schools.
+#' @param private_type Select which type of Report Card to be included for choice schools.
 #' Options are 'choice' for the 'Private - Choice Students' and 'all' for 'Private - All Students'
-#' report card types.
+#' Report Card types.
 #' @param exclude_milwaukee Logical. If TRUE (default value), Milwaukee schools will be
 #' excluded from \code{wi_rc}.
 #' @import dplyr
@@ -20,6 +16,7 @@ make_mke_schools <- function() {
     filter(city == "Milwaukee" & (district_name == "Milwaukee" | accurate_agency_type != "Private School") & locale_description != "Suburb")
 }
 
+#' @describeIn make_mke_schools Make a dataframe of Milwaukee schools' Report Card data.
 make_mke_rc <- function(private_type = "choice") {
   make_mke_schools()
 
@@ -38,6 +35,7 @@ make_mke_rc <- function(private_type = "choice") {
   }
 }
 
+#' @describeIn make_mke_schools Make a dataframe of Wisconsin schools' Report Card data.
 make_wi_rc <- function(exclude_milwaukee = TRUE, private_type = "choice") {
   make_mke_schools()
 

@@ -2,23 +2,32 @@
 % Please edit documentation in R/common_filters.R
 \name{make_mke_schools}
 \alias{make_mke_schools}
-\title{Make common filterd dataframes from \code{wisconsink12} data.}
+\alias{make_mke_rc}
+\alias{make_wi_rc}
+\title{Make common filtered dataframes from \code{wisconsink12} data.}
 \usage{
 make_mke_schools()
+
+make_mke_rc(private_type = "choice")
+
+make_wi_rc(exclude_milwaukee = TRUE, private_type = "choice")
 }
 \arguments{
-\item{private_type}{Select which type of report card to be included for choice schools.
+\item{private_type}{Select which type of Report Card to be included for choice schools.
 Options are 'choice' for the 'Private - Choice Students' and 'all' for 'Private - All Students'
-report card types.}
+Report Card types.}
 
 \item{exclude_milwaukee}{Logical. If TRUE (default value), Milwaukee schools will be
 excluded from \code{wi_rc}.}
 }
 \description{
-\code{make_mke_schools} Filters the \code{schools} data for
-  schools in the city of Milwaukee.
-\code{make_mke_rc} Filters the \code{report_cards} data for
-  schools in the city of Milwaukee.
-\code{make_wi_rc} Filters the \code{report_cards} data for
-  school in Wisconsin, either including or excluding Milwaukee.
+Filters the \code{schools} dataframe for common slices of data,
+such as city of Milwaukee schools and their report cards.
 }
+\section{Functions}{
+\itemize{
+\item \code{make_mke_rc}: Make a dataframe of Milwaukee schools' Report Card data.
+
+\item \code{make_wi_rc}: Make a dataframe of Wisconsin schools' Report Card data.
+}}
+
