@@ -44,7 +44,7 @@ devtools::install_github("cityforwardcollective/wisconsink12")
 
 The `wisconsink12` package is built around the school data it makes available.  This data is organized into tables (listed above), and each table contains a school ID field called the `dpi_true_id`.  This field is a concatenation of a school's District Code and its School Code, with a '_' inbetween.  Both codes are padded with zeros on the left to a length of four, and choice schools are given a District Code of '0000'.  
 
-Once the `wisconsink12` package is loaded, the tables are made available in the global environment.
+Once the `wisconsink12` package is loaded, a message will be displayed listing the tables that are available.
 
 ```{r}
 # Trying to access tables before loading
@@ -54,7 +54,8 @@ Once the `wisconsink12` package is loaded, the tables are made available in the 
 
 library(wisconsink12)
 
+# Inspect the first table
 str(schools)
 ```
 
-Then
+
