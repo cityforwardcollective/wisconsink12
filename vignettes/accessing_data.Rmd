@@ -20,54 +20,40 @@ knitr::opts_chunk$set(
 
 The `wisconsink12` package was developed to increase the accessibility of publicly available data regarding K12 schools in Wisconsin and to facilitate analysis of that data.
 
+The data is organized in a relational database structure, where each table has a unique school identifier that facilitates joins.  As of this writing, the following data tables are included:
 
+* `schools` -- This is a list of all schools in Wisconsin that serves as the unique identifier table for the relational database.
+* `enrollment` -- This table contains enrollment data for all Wisconsin schools. Disaggregated enrollment data is not available for private schools.
+* `forward_exam` -- This table contains forward exam results for public and Choice-participating private schools.  Disaggregated test results are not available for private schools.
+* `graduation` -- This table contains graduation and completion data for all public schools.  Private schools are not included here at all because cohort counts are not available for private schools, and so rates cannot be calculated.
+* `report_cards` -- this table contains Report Card data from all schools in Wisconsin.
 
-# Vignette Tutorial
+# Installation
 
-Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
+As of this writing, there are no plans to submit the `wisconsink12` package to CRAN, so it must be downloaded from City Forward Collective's [GitHub repository]("https://github.com/cityforwardcollective").  This can be achieved with the following code.
 
-- Never uses retina figures
-- Has a smaller default figure size
-- Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style
+```{r eval=FALSE}
+# The devtools package is required
+# to download from GitHub.
+# install.packages("devtools")
 
-## Vignette Info
-
-Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
-
-## Styles
-
-The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
-
-    output: 
-      rmarkdown::html_vignette:
-        css: mystyles.css
-
-## Figures
-
-The figure sizes have been customised so that you can easily put two images side-by-side. 
-
-```{r, fig.show='hold'}
-plot(1:10)
-plot(10:1)
+devtools::install_github("cityforwardcollective/wisconsink12")
 ```
 
-You can enable figure captions by `fig_caption: yes` in YAML:
+# Usage
 
-    output:
-      rmarkdown::html_vignette:
-        fig_caption: yes
+The `wisconsink12` package is built around the school data it makes available.  This data is organized into tables (listed above), and each table contains a school ID field called the `dpi_true_id`.  This field is a concatenation of a school's District Code and its School Code, with a '_' inbetween.  Both codes are padded with zeros on the left to a length of four, and choice schools are given a District Code of '0000'.  
 
-Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
+Once the `wisconsink12` package is loaded, the tables are made available in the global environment.
 
-## More Examples
+```{r}
+# Trying to access tables before loading
+# the package will result in an error.
 
-You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
+# Load the package, then access the tables.
 
-```{r, echo=FALSE, results='asis'}
-knitr::kable(head(mtcars, 10))
+library(wisconsink12)
+
+str(schools)
 ```
 
-Also a quote using `>`:
-
-> "He who gives up [code] safety for [code] speed deserves neither."
-([via](https://twitter.com/hadleywickham/status/504368538874703872))
