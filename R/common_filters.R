@@ -13,10 +13,14 @@
 #' @export make_mke_schools
 #' @export make_mke_rc
 #' @export make_wi_rc
+
+# School Lists =================================================================
 make_mke_schools <- function() {
   mke_schools <<- schools %>%
     filter(city == "Milwaukee" & (district_name == "Milwaukee" | accurate_agency_type != "Private School") & locale_description != "Suburb")
 }
+
+# Report Card Lists =================================================================
 
 #' @describeIn make_mke_schools Make a dataframe of Milwaukee schools' Report Card data.
 make_mke_rc <- function(private_type = "choice") {
@@ -65,4 +69,10 @@ make_wi_rc <- function(exclude_milwaukee = TRUE, private_type = "choice") {
   } else {
     stop("Did you specify 'choice' or 'all' for private_type?")
   }
+}
+
+# Enrollment Lists =================================================================
+
+make_mke_enrollment <- function() {
+
 }
