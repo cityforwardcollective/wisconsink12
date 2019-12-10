@@ -6,6 +6,14 @@
 \usage{
 make_mke_schools()
 }
+\arguments{
+\item{private_type}{Select which type of report card to be included for choice schools.
+Options are 'choice' for the 'Private - Choice Students' and 'all' for 'Private - All Students'
+report card types.}
+
+\item{exclude_milwaukee}{Logical. If TRUE (default value), Milwaukee schools will be
+excluded from \code{wi_rc}.}
+}
 \description{
 \code{make_mke_schools} filters the \code{schools} data for
   schools in the city of Milwaukee.
