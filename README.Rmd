@@ -10,6 +10,8 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+
+library(wisconsink12)
 ```
 
 # Introduction
@@ -55,6 +57,7 @@ As the output shows, we indeed have access to the five tables listed above.  We 
 
 ```{r}
 # Inspect the `schools` table
+
 str(schools)
 ```
 
@@ -62,6 +65,14 @@ If you get further along after loading the package and you forget what tables ar
 
 ```{r}
 # List the tables available in the 
-# `wisconsink12` package
+# `wisconsink12` package.
+
 list_tables()
+```
+
+# Most Common Uses
+
+There are a few slices of this data that will be a starting point for any analysis the vast majority of the time.  For example, you might want to perform an analysis on Report Card outcomes for Milwaukee schools.  To easily filter for these schools, you can use the `make_mke_rc()` function.
+
+```{r}
 ```

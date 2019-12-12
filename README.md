@@ -49,7 +49,7 @@ The `wisconsink12` package is built around the school data it makes
 available. This data is organized into tables (listed above), and each
 table contains a school ID field called the `dpi_true_id`. This field is
 a concatenation of a school’s District Code and its School Code, with an
-underscore ’\_’ inbetween. Both codes are padded with zeros on the left
+underscore ’\_’ in between. Both codes are padded with zeros on the left
 to a length of four, and choice schools are given a District Code of
 ‘0000’.
 
@@ -63,12 +63,6 @@ listing the tables that are available.
 # Load the package, then access the tables.
 
 library(wisconsink12)
-#> The following tables are now available:
-#> - schools
-#> - enrollment
-#> - report_cards
-#> - forward_exam
-#> - graduation
 ```
 
 As the output shows, we indeed have access to the five tables listed
@@ -76,6 +70,7 @@ above. We can inspect these tables as we would any dataframe.
 
 ``` r
 # Inspect the `schools` table
+
 str(schools)
 #> 'data.frame':    3237 obs. of  11 variables:
 #>  $ locale_description  : chr  NA NA NA "NA" ...
@@ -90,3 +85,23 @@ str(schools)
 #>  $ accurate_agency_type: chr  "Private School" "Private School" "Private School" "Private School" ...
 #>  $ last_year_open      : chr  "2018-19" "2018-19" "2018-19" "2018-19" ...
 ```
+
+If you get further along after loading the package and you forget what
+tables are available, you can access that information with the
+`list_tables()` function.
+
+``` r
+# List the tables available in the 
+# `wisconsink12` package.
+
+list_tables()
+#> [1] "schools"      "enrollment"   "report_cards" "forward_exam" "graduation"
+```
+
+# Most Common Uses
+
+There are a few slices of this data that will be a starting point for
+any analysis the vast majority of the time. For example, you might want
+to perform an analysis on Report Card outcomes for Milwaukee schools. To
+easily filter for these schools, you can use the `make_mke_rc()`
+function.
