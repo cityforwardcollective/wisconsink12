@@ -1,4 +1,4 @@
-Accessing Wisconsin K12 Data
+Wisconsin K12 School Data
 ================
 Spencer Schien
 2019-12-12
@@ -25,15 +25,15 @@ writing, the following data tables are included:
     for all public schools. Private schools are not included here at all
     because cohort counts are not available for private schools, and so
     rates cannot be calculated.
-  - `report_cards` – this table contains Report Card data from all
+  - `report_cards` – This table contains Report Card data from all
     schools in Wisconsin.
 
 # Installation
 
 As of this writing, there are no plans to submit the `wisconsink12`
 package to CRAN, so it must be downloaded from City Forward Collective’s
-[GitHub repository](%22https://github.com/cityforwardcollective%22).
-This can be achieved with the following code.
+[GitHub repository](https://github.com/cityforwardcollective). This can
+be achieved with the following code.
 
 ``` r
 # The devtools package is required
@@ -43,14 +43,15 @@ This can be achieved with the following code.
 devtools::install_github("cityforwardcollective/wisconsink12")
 ```
 
-# Usage
+# Accessing the Data
 
 The `wisconsink12` package is built around the school data it makes
 available. This data is organized into tables (listed above), and each
 table contains a school ID field called the `dpi_true_id`. This field is
-a concatenation of a school’s District Code and its School Code, with a
-’\_’ inbetween. Both codes are padded with zeros on the left to a
-length of four, and choice schools are given a District Code of ‘0000’.
+a concatenation of a school’s District Code and its School Code, with an
+underscore ’\_’ inbetween. Both codes are padded with zeros on the left
+to a length of four, and choice schools are given a District Code of
+‘0000’.
 
 Once the `wisconsink12` package is loaded, a message will be displayed
 listing the tables that are available.
@@ -68,8 +69,13 @@ library(wisconsink12)
 #> - report_cards
 #> - forward_exam
 #> - graduation
+```
 
-# Inspect the first table
+As the output shows, we indeed have access to the five tables listed
+above. We can inspect these tables as we would any dataframe.
+
+``` r
+# Inspect the `schools` table
 str(schools)
 #> 'data.frame':    3237 obs. of  11 variables:
 #>  $ locale_description  : chr  NA NA NA "NA" ...

@@ -1,12 +1,8 @@
 ---
-title: "Accessing Wisconsin K12 Data"
+title: "Wisconsin K12 School Data"
 author: "Spencer Schien"
 date: "`r Sys.Date()`"
 output: github_document
-vignette: >
-  %\VignetteIndexEntry{Vignette Title}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include = FALSE}
@@ -26,11 +22,11 @@ The data is organized in a relational database structure, where each table has a
 * `enrollment` -- This table contains enrollment data for all Wisconsin schools. Disaggregated enrollment data is not available for private schools.
 * `forward_exam` -- This table contains forward exam results for public and Choice-participating private schools.  Disaggregated test results are not available for private schools.
 * `graduation` -- This table contains graduation and completion data for all public schools.  Private schools are not included here at all because cohort counts are not available for private schools, and so rates cannot be calculated.
-* `report_cards` -- this table contains Report Card data from all schools in Wisconsin.
+* `report_cards` -- This table contains Report Card data from all schools in Wisconsin.
 
 # Installation
 
-As of this writing, there are no plans to submit the `wisconsink12` package to CRAN, so it must be downloaded from City Forward Collective's [GitHub repository]("https://github.com/cityforwardcollective").  This can be achieved with the following code.
+As of this writing, there are no plans to submit the `wisconsink12` package to CRAN, so it must be downloaded from City Forward Collective's [GitHub repository](https://github.com/cityforwardcollective).  This can be achieved with the following code.
 
 ```{r eval=FALSE}
 # The devtools package is required
@@ -40,9 +36,9 @@ As of this writing, there are no plans to submit the `wisconsink12` package to C
 devtools::install_github("cityforwardcollective/wisconsink12")
 ```
 
-# Usage
+# Accessing the Data
 
-The `wisconsink12` package is built around the school data it makes available.  This data is organized into tables (listed above), and each table contains a school ID field called the `dpi_true_id`.  This field is a concatenation of a school's District Code and its School Code, with a '_' inbetween.  Both codes are padded with zeros on the left to a length of four, and choice schools are given a District Code of '0000'.  
+The `wisconsink12` package is built around the school data it makes available.  This data is organized into tables (listed above), and each table contains a school ID field called the `dpi_true_id`.  This field is a concatenation of a school's District Code and its School Code, with an underscore '_' in between.  Both codes are padded with zeros on the left to a length of four, and choice schools are given a District Code of '0000'.  
 
 Once the `wisconsink12` package is loaded, a message will be displayed listing the tables that are available.
 
@@ -53,9 +49,19 @@ Once the `wisconsink12` package is loaded, a message will be displayed listing t
 # Load the package, then access the tables.
 
 library(wisconsink12)
+```
 
-# Inspect the first table
+As the output shows, we indeed have access to the five tables listed above.  We can inspect these tables as we would any dataframe.
+
+```{r}
+# Inspect the `schools` table
 str(schools)
 ```
 
+If you get further along after loading the package and you forget what tables are available, you can access that information with the `list_tables()` function.
 
+```{r}
+# List the tables available in the 
+# `wisconsink12` package
+list_tables()
+```

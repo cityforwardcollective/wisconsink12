@@ -1,10 +1,20 @@
 # Startup message when package is attached.
 
-.x <- load("data/school_data.RData")
+.tables <- load("data/school_data.RData")
 
 .onAttach <- function(libname, pkgname) {
   packageStartupMessage(
     "The following tables are now available:\n",
-          paste("- ", .x, "\n", sep = "")
+          paste("- ", .tables, "\n", sep = "")
   )
+}
+
+#' List available tables
+#'
+#' List tables that are made available by the
+#' \code{wisconsink12} package.
+#'
+#' @export list_tables
+list_tables <- function() {
+  .tables
 }
