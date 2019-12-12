@@ -1,1 +1,86 @@
-# Wisconsin Schools Data
+Accessing Wisconsin K12 Data
+================
+Spencer Schien
+2019-12-12
+
+# Introduction
+
+The `wisconsink12` package was developed to increase the accessibility
+of publicly available data regarding K12 schools in Wisconsin and to
+facilitate analysis of that data.
+
+The data is organized in a relational database structure, where each
+table has a unique school identifier that facilitates joins. As of this
+writing, the following data tables are included:
+
+  - `schools` – This is a list of all schools in Wisconsin that serves
+    as the unique identifier table for the relational database.
+  - `enrollment` – This table contains enrollment data for all Wisconsin
+    schools. Disaggregated enrollment data is not available for private
+    schools.
+  - `forward_exam` – This table contains forward exam results for public
+    and Choice-participating private schools. Disaggregated test results
+    are not available for private schools.
+  - `graduation` – This table contains graduation and completion data
+    for all public schools. Private schools are not included here at all
+    because cohort counts are not available for private schools, and so
+    rates cannot be calculated.
+  - `report_cards` – this table contains Report Card data from all
+    schools in Wisconsin.
+
+# Installation
+
+As of this writing, there are no plans to submit the `wisconsink12`
+package to CRAN, so it must be downloaded from City Forward Collective’s
+[GitHub repository](%22https://github.com/cityforwardcollective%22).
+This can be achieved with the following code.
+
+``` r
+# The devtools package is required
+# to download from GitHub.
+# install.packages("devtools")
+
+devtools::install_github("cityforwardcollective/wisconsink12")
+```
+
+# Usage
+
+The `wisconsink12` package is built around the school data it makes
+available. This data is organized into tables (listed above), and each
+table contains a school ID field called the `dpi_true_id`. This field is
+a concatenation of a school’s District Code and its School Code, with a
+’\_’ inbetween. Both codes are padded with zeros on the left to a
+length of four, and choice schools are given a District Code of ‘0000’.
+
+Once the `wisconsink12` package is loaded, a message will be displayed
+listing the tables that are available.
+
+``` r
+# Trying to access tables before loading
+# the package will result in an error.
+
+# Load the package, then access the tables.
+
+library(wisconsink12)
+#> The following tables are now available:
+#> - schools
+#> - enrollment
+#> - report_cards
+#> - forward_exam
+#> - graduation
+
+# Inspect the first table
+str(schools)
+#> 'data.frame':    3237 obs. of  11 variables:
+#>  $ locale_description  : chr  NA NA NA "NA" ...
+#>  $ city                : chr  NA NA NA "La Crosse" ...
+#>  $ dpi_true_id         : chr  "0000_0005" "0000_0052" "0000_0057" "0000_0070" ...
+#>  $ school_name         : chr  "Abbotsford Christian Academy" "Hillside Amish School" "Amish Parochial Schools" "Aquinas Middle" ...
+#>  $ agency_type         : chr  "Private school" "Private school" "Private school" "Private school" ...
+#>  $ district_name       : chr  "Abbotsford" "Medford Area Public" "Granton Area" "La Crosse" ...
+#>  $ county              : chr  "Clark" "Taylor" "Clark" "La Crosse" ...
+#>  $ choice_indicator    : int  0 0 0 1 1 0 1 0 1 0 ...
+#>  $ charter_indicator   : int  0 0 0 0 0 0 0 0 0 0 ...
+#>  $ accurate_agency_type: chr  "Private School" "Private School" "Private School" "Private School" ...
+#>  $ last_year_open      : chr  "2018-19" "2018-19" "2018-19" "2018-19" ...
+```
