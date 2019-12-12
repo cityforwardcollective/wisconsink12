@@ -4,7 +4,7 @@
 \alias{make_mke_schools}
 \alias{make_mke_rc}
 \alias{make_wi_rc}
-\title{Make common filtered dataframes from \code{wisconsink12} data.}
+\title{Make common dataframes}
 \usage{
 make_mke_schools()
 
@@ -21,7 +21,7 @@ Report Card types.}
 excluded from \code{wi_rc}.}
 }
 \description{
-Filters the \code{schools} dataframe for common slices of data,
+Creates commonly-needed dataframes of \code{wisconsink12} data,
 such as city of Milwaukee schools and their report cards.
 }
 \section{Functions}{

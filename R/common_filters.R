@@ -1,6 +1,6 @@
-#' Make common filtered dataframes from \code{wisconsink12} data.
+#' Make common dataframes
 #'
-#' Filters the \code{schools} dataframe for common slices of data,
+#' Creates commonly-needed dataframes of \code{wisconsink12} data,
 #' such as city of Milwaukee schools and their report cards.
 #'
 #' @param private_type Select which type of Report Card to be included for choice schools.
