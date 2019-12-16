@@ -75,4 +75,18 @@ list_tables()
 There are a few slices of this data that will be a starting point for any analysis the vast majority of the time.  For example, you might want to perform an analysis on Report Card outcomes for Milwaukee schools.  To easily filter for these schools, you can use the `make_mke_rc()` function.
 
 ```{r}
+# Call `make_mke_rc()` to create two tables:
+# `mke_schools` table and `mke_rc` table 
+
+make_mke_rc()
+
+# List environment objects with `ls()`
+
+ls()
 ```
+
+The primary result of this function is to create `mke_rc`, a table of Report Card data filtered for Milwaukee schools.  A secondary result is the creation of the `mke_schools` table, which contains a unique list of Wisconsin schools along with certain information on those schools such as agency type, last year the school was open, etc.
+
+An important item to note is that private schools participating in a parental choice program in Wisconsin are required to have a report card for their students attending with voucher funds, and they have the option to receive a report card for all of their students.  The functions in the `wisconsink12` package by default filter for the choice students (designated as the *Private - Choice Students* report card in the `report_card_type` field of the `report_cards` table).  This filter can be changed with the `private_type` argument -- setting it as "all" would filter for the *Private - All Students* report card.
+
+***To Be Updated...***
