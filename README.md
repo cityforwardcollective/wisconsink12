@@ -45,6 +45,8 @@ devtools::install_github("cityforwardcollective/wisconsink12")
 
 # Accessing the Data
 
+## Milwaukee School Report Cards
+
 The `wisconsink12` package is built around the school data it makes
 available. This data is organized into tables (listed above), and each
 table contains a school ID field called the `dpi_true_id`. This field is
@@ -134,5 +136,85 @@ in the `wisconsink12` package by default filter for the choice students
 `report_card_type` field of the `report_cards` table). This filter can
 be changed with the `private_type` argument – setting it as “all” would
 filter for the *Private - All Students* report card.
+
+``` r
+# make_mke_rc() was run above, 
+# with default private_type = "choice"
+
+# Examine unique report card types
+
+unique(mke_rc$report_card_type)
+#> [1] NA                          "Private - Choice Students"
+#> [3] "Public - All Students"
+
+# Call make_mke_rc() again, 
+# with default private_type = "s"
+
+make_mke_rc(private_type = "all")
+#> Choosing 'Private - All Students' report card type where available for private schools.
+
+# Examine unique report card types
+
+unique(mke_rc$report_card_type)
+#> [1] NA                          "Private - Choice Students"
+#> [3] "Private - All Students"    "Public - All Students"
+```
+
+We see from the two `unique()` calls that `NA` values remain in both
+instances – this is because this field didn’t exist for the 2015-16
+Report Cards since no private schools had scores computed that year. We
+also see that the second `unique()` call still shows *Private - Choice
+Students* among the unique values, even though we set `private_type` to
+“all”. This is because designating “all” chooses the *Private - All
+Students* report card type *when it is available* – as mentioned above,
+schools only have that report card type if they elect to do so.
+
+``` r
+make_mke_rc()
+
+library(knitr) # `knitr` needed for `kable()` below
+library(tidyverse) # tidyverse will be used throughout
+
+table(mke_rc$report_card_type, mke_rc$school_year) %>%
+  kable()
+```
+
+|                           | 2015-16 | 2016-17 | 2017-18 | 2018-19 |
+| ------------------------- | ------: | ------: | ------: | ------: |
+| Private - Choice Students |       0 |      89 |      89 |      87 |
+| Public - All Students     |       0 |     176 |     178 |     180 |
+
+## How many students are in schools that *Meet Expectations*?
+
+``` r
+# Designate which ratings fall below 'Meeting Expectations'
+
+low_performers <- c("Alternate Rating - Needs Improvement",
+                    "Fails to Meet Expectations",
+                    "Fails to Meed Expectations^",
+                    "Meets Few Expectations",
+                    "Meets Few Expectations^")
+
+not_rated <- c("Not Rated",
+               "NR-DATA")
+
+meets_expecs <- report_cards %>%
+  filter(school_year == "2018-19") %>%
+  mutate(quality = ifelse(overall_rating %in% low_performers, "Not Meeting Expectations", 
+                          ifelse(overall_rating %in% not_rated, "Not Rated", "Meeting Expectations"))) %>%
+  modify_at("quality", factor, levels = c("Not Meeting Expectations",
+                                          "Meeting Expectations")) %>%
+  group_by(quality) %>%
+  summarise(total_enrollment = sum(school_enrollment))
+#> Warning: Factor `quality` contains implicit NA, consider using
+#> `forcats::fct_explicit_na`
+
+meets_expecs %>%
+  ggplot(aes(quality, total_enrollment)) +
+  geom_col()
+#> Warning: Removed 1 rows containing missing values (position_stack).
+```
+
+![](README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 ***To Be Updated…***
