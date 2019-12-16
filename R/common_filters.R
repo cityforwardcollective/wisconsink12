@@ -28,7 +28,7 @@ make_mke_rc <- function(private_type = "choice") {
 
   if(private_type == "choice") {
     mke_rc <<- report_cards %>%
-      filter(dpi_true_id %in% mke_schools$dpi_true_id & report_card_type != "Private - All Students")
+      filter(dpi_true_id %in% mke_schools$dpi_true_id & (report_card_type != "Private - All Students" | is.na(report_card_type)))
 
     message("Choosing 'Private - Choice Students' report card type for private schools.")
   } else if(private_type == "all") {
