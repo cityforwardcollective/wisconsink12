@@ -187,7 +187,7 @@ table(mke_rc$report_card_type, mke_rc$school_year) %>%
 ## How many students are in schools that *Meet Expectations*?
 
 Now that we have our `mke_rc` table, let us ask how many students are
-enrolled in schools that are rated *Meets Expectations* or higher.
+enrolled\[1\] in schools that are rated *Meets Expectations* or higher.
 
 ``` r
 # Designate which ratings fall below 'Meeting Expectations'
@@ -243,4 +243,7 @@ receive a rating of *Meets Expectations* or higher.
 
 ## How Many Choice and Charter Schools are in Milwaukee?
 
-***Still being updated…***
+1.  Note that enrollment is a tricky number to pin down in some cases,
+    and the easiest way to do this at the city-wide level is to use
+    numbers included in the Report Card data release. ***Still being
+    updated…***
