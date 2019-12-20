@@ -186,6 +186,9 @@ table(mke_rc$report_card_type, mke_rc$school_year) %>%
 
 ## How many students are in schools that *Meet Expectations*?
 
+Now that we have our `mke_rc` table, let us ask how many students are
+enrolled\[1\] in schools that are rated *Meets Expectations* or higher.
+
 ``` r
 # Designate which ratings fall below 'Meeting Expectations'
 
@@ -195,26 +198,52 @@ low_performers <- c("Alternate Rating - Needs Improvement",
                     "Meets Few Expectations",
                     "Meets Few Expectations^")
 
+# Designate which ratings should be excluded from buckets
+
 not_rated <- c("Not Rated",
                "NR-DATA")
 
-meets_expecs <- report_cards %>%
+# Create `quality` field that designates meeting expecs or not
+
+meets_expecs <- mke_rc %>%
   filter(school_year == "2018-19") %>%
   mutate(quality = ifelse(overall_rating %in% low_performers, "Not Meeting Expectations", 
                           ifelse(overall_rating %in% not_rated, "Not Rated", "Meeting Expectations"))) %>%
   modify_at("quality", factor, levels = c("Not Meeting Expectations",
-                                          "Meeting Expectations")) %>%
+                                          "Meeting Expectations",
+                                          "Not Rated")) %>%
   group_by(quality) %>%
-  summarise(total_enrollment = sum(school_enrollment))
-#> Warning: Factor `quality` contains implicit NA, consider using
-#> `forcats::fct_explicit_na`
+  summarise(total_enrollment = sum(school_enrollment)) %>%
+  
+  # Calculate percentage of total
+  
+  mutate(percent = scales::percent(total_enrollment/sum(total_enrollment)))
+
+# Return the data to inspect it
+
+meets_expecs
+#> # A tibble: 3 x 3
+#>   quality                  total_enrollment percent
+#>   <fct>                               <dbl> <chr>  
+#> 1 Not Meeting Expectations            32834 30%    
+#> 2 Meeting Expectations                74813 69%    
+#> 3 Not Rated                             311 0%
+
+# Visualize with bar graphs
 
 meets_expecs %>%
   ggplot(aes(quality, total_enrollment)) +
   geom_col()
-#> Warning: Removed 1 rows containing missing values (position_stack).
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
-***To Be Updated…***
+As we can see, nearly 7/10 students in Milwaukee are in schools that
+receive a rating of *Meets Expectations* or higher.
+
+## How Many Choice and Charter Schools are in Milwaukee?
+
+1.  Note that enrollment is a tricky number to pin down in some cases,
+    and the easiest way to do this at the city-wide level is to use
+    numbers included in the Report Card data release. ***Still being
+    updated…***
