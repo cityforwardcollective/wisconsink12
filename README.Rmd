@@ -175,4 +175,16 @@ As we can see, nearly 7/10 students in Milwaukee are in schools that receive a r
 ## How Many Choice and Charter Schools are in Milwaukee?  
 
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+[^1]: Note that enrollment is a tricky number to pin down in some cases, and the easiest way to do this at the city-wide level is to use numbers included in the Report Card data release.
+=======
+[^1]: Note that enrollment is a tricky number to pin down in some cases, and the easiest way to do this at the city-wide level is to use numbers included in the Report Card data release.  
+
+
+
+>>>>>>> ed6a7c331df927f7178cfdcc87c8c2e75279e0cb
+
+>>>>>>> e2db22fb112066665822681d391207b05e26c325
 ***Still being updated...***
