@@ -28,12 +28,14 @@ make_mke_rc <- function(private_type = "choice") {
 
   if(private_type == "choice") {
     mke_rc <<- report_cards %>%
-      filter(dpi_true_id %in% mke_schools$dpi_true_id & (report_card_type != "Private - All Students" | is.na(report_card_type)))
+      filter(dpi_true_id %in% mke_schools$dpi_true_id & (report_card_type != "Private - All Students" | is.na(report_card_type))) %>%
+      left_join(., schools %>% select(dpi_true_id, school_name, broad_agency_type, accurate_agency_type), by = "dpi_true_id")
 
     message("Choosing 'Private - Choice Students' report card type for private schools.")
   } else if(private_type == "all") {
     mke_rc <<- report_cards %>%
-     filter(dpi_true_id %in% mke_schools$dpi_true_id & !(has_2_rc == 1 & report_card_type == "Private - Choice Students"))
+     filter(dpi_true_id %in% mke_schools$dpi_true_id & !(has_2_rc == 1 & report_card_type == "Private - Choice Students")) %>%
+      left_join(., schools %>% select(dpi_true_id, school_name, broad_agency_type, accurate_agency_type), by = "dpi_true_id")
 
     message("Choosing 'Private - All Students' report card type where available for private schools.")
   } else {
