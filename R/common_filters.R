@@ -13,6 +13,7 @@
 #' @export make_mke_schools
 #' @export make_mke_rc
 #' @export make_wi_rc
+#' @export make_mke_enrollment
 
 # School Lists =================================================================
 make_mke_schools <- function() {
@@ -75,6 +76,7 @@ make_wi_rc <- function(exclude_milwaukee = TRUE, private_type = "choice") {
 
 # Enrollment Lists =================================================================
 
+#' @describeIn make_mke_schools Make a dataframe of overall enrollment of Milwaukee resident children.
 make_mke_enrollment <- function(agency_type = "broad") {
 
   if(agency_type == "broad") {

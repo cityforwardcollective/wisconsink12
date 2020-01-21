@@ -4,6 +4,7 @@
 \alias{make_mke_schools}
 \alias{make_mke_rc}
 \alias{make_wi_rc}
+\alias{make_mke_enrollment}
 \title{Make common dataframes}
 \usage{
 make_mke_schools()
@@ -11,6 +12,8 @@ make_mke_schools()
 make_mke_rc(private_type = "choice")
 
 make_wi_rc(exclude_milwaukee = TRUE, private_type = "choice")
+
+make_mke_enrollment(agency_type = "broad")
 }
 \arguments{
 \item{private_type}{Select which type of Report Card to be included for choice schools.
@@ -29,5 +32,7 @@ such as city of Milwaukee schools and their report cards.
 \item \code{make_mke_rc}: Make a dataframe of Milwaukee schools' Report Card data.
 
 \item \code{make_wi_rc}: Make a dataframe of Wisconsin schools' Report Card data.
+
+\item \code{make_mke_enrollment}: Make a dataframe of overall enrollment of Milwaukee resident children.
 }}
 
