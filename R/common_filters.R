@@ -91,7 +91,7 @@ make_mke_enrollment <- function(agency_type = "broad") {
       select(school_year, broad_agency_type, "total_enrollment" = school_enrollment) %>%
       bind_rows(., other_enrollment %>% select(-accurate_agency_type)) %>%
       group_by(school_year, broad_agency_type) %>%
-      summarise(total_enrollment = sum(school_enrollment, na.rm = TRUE))
+      summarise(total_enrollment = sum(total_enrollment, na.rm = TRUE))
 
 
   } else if(agency_type == "accurate") {
@@ -106,7 +106,7 @@ make_mke_enrollment <- function(agency_type = "broad") {
       select(school_year, accurate_agency_type, "total_enrollment" = school_enrollment) %>%
       bind_rows(., other_enrollment %>% select(-broad_agency_type)) %>%
       group_by(school_year, accurate_agency_type) %>%
-      summarise(total_enrollment = sum(school_enrollment, na.rm = TRUE))
+      summarise(total_enrollment = sum(total_enrollment, na.rm = TRUE))
 
   } else {
     stop("Did you specify 'broad' or 'accurate' for agency_type?")
