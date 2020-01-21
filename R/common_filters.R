@@ -91,6 +91,21 @@ make_mke_enrollment <- function(agency_type = "broad") {
       group_by(school_year, broad_agency_type) %>%
       summarise(total_enrollment = sum(school_enrollment, na.rm = TRUE))
 
+    mke_oe <- open_enrollment %>%
+      filter(district_code == 3619) %>%
+      select(school_year, pupil_transfers_out) %>%
+      rename("total_enrollment" = pupil_transfers_out)
+
+    chapter_220 <- chapter_220 %>%
+      rename("total_enrollment" = mke_out_sept)
+
+    oe_220 <- bind_rows(mke_oe, chapter_220) %>%
+      group_by(school_year) %>%
+      summarise(total_enrollment = sum(total_enrollment)) %>%
+      mutate(broad_agency_type = "Open Enrollment/Chapter 220")
+
+    mke_enrollment_bat <<- bind_rows(mke_rc_bat, oe_220)
+
   } else if(agency_type == "accurate") {
     mke_schools <- schools %>%
       filter(MPCP == 1 | (city == "Milwaukee" & (district_name == "Milwaukee" | accurate_agency_type != "Private School") & locale_description != "Suburb"))
@@ -102,20 +117,21 @@ make_mke_enrollment <- function(agency_type = "broad") {
     mke_rc_aat <- mke_rc %>%
       group_by(school_year, accurate_agency_type) %>%
       summarise(total_enrollment = sum(school_enrollment, na.rm = TRUE))
+
+    mke_oe <- open_enrollment %>%
+      filter(district_code == 3619) %>%
+      select(school_year, pupil_transfers_out) %>%
+      rename("total_enrollment" = pupil_transfers_out) %>%
+      mutate(accurate_agency_type = "Open Enrollment")
+
+    chapter_220 <- chapter_220 %>%
+      rename("total_enrollment" = mke_out_sept) %>%
+      mutate(accurate_agency_type = "Chapter 220")
+
+    mke_enrollment_aat <<- bind_rows(mke_rc_aat, mke_oe, chapter_220)
+
+
   } else {
     stop("Did you specify 'broad' or 'accurate' for agency_type?")
   }
-
-  mke_oe <- open_enrollment %>%
-    filter(district_code == 3619) %>%
-    select(school_year, pupil_transfers_out) %>%
-    rename("total_enrollment" = pupil_transfers_out) %>%
-    mutate(broad_agency_type = "Open Enrollment")
-
-  chapter_220 <- chapter_220 %>%
-    rename("total_enrollment" = mke_out_sept) %>%
-    mutate(broad_agency_type = "Chapter 220")
-
-  mke_enrollment_bat <<- bind_rows(mke_rc_bat, mke_oe, chapter_220)
-
 }
