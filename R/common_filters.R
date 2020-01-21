@@ -87,24 +87,12 @@ make_mke_enrollment <- function(agency_type = "broad") {
       filter(dpi_true_id %in% mke_schools$dpi_true_id & (report_card_type != "Private - All Students" | is.na(report_card_type))) %>%
       left_join(., schools %>% select(dpi_true_id, school_name, broad_agency_type), by = "dpi_true_id")
 
-    mke_rc_bat <- mke_rc %>%
+    mke_enrollment_bat <<- mke_rc %>%
+      select(school_year, broad_agency_type, "total_enrollment" = school_enrollment) %>%
+      bind_rows(., other_enrollment %>% select(-accurate_agency_type)) %>%
       group_by(school_year, broad_agency_type) %>%
       summarise(total_enrollment = sum(school_enrollment, na.rm = TRUE))
 
-    mke_oe <- open_enrollment %>%
-      filter(district_code == 3619) %>%
-      select(school_year, pupil_transfers_out) %>%
-      rename("total_enrollment" = pupil_transfers_out)
-
-    chapter_220 <- chapter_220 %>%
-      rename("total_enrollment" = mke_out_sept)
-
-    oe_220 <- bind_rows(mke_oe, chapter_220) %>%
-      group_by(school_year) %>%
-      summarise(total_enrollment = sum(total_enrollment)) %>%
-      mutate(broad_agency_type = "Open Enrollment/Chapter 220")
-
-    mke_enrollment_bat <<- bind_rows(mke_rc_bat, oe_220)
 
   } else if(agency_type == "accurate") {
     mke_schools <- schools %>%
@@ -114,22 +102,11 @@ make_mke_enrollment <- function(agency_type = "broad") {
       filter(dpi_true_id %in% mke_schools$dpi_true_id & (report_card_type != "Private - All Students" | is.na(report_card_type))) %>%
       left_join(., schools %>% select(dpi_true_id, school_name, accurate_agency_type), by = "dpi_true_id")
 
-    mke_rc_aat <- mke_rc %>%
+    mke_enrollment_aat <<- mke_rc %>%
+      select(school_year, accurate_agency_type, "total_enrollment" = school_enrollment) %>%
+      bind_rows(., other_enrollment %>% select(-broad_agency_type)) %>%
       group_by(school_year, accurate_agency_type) %>%
       summarise(total_enrollment = sum(school_enrollment, na.rm = TRUE))
-
-    mke_oe <- open_enrollment %>%
-      filter(district_code == 3619) %>%
-      select(school_year, pupil_transfers_out) %>%
-      rename("total_enrollment" = pupil_transfers_out) %>%
-      mutate(accurate_agency_type = "Open Enrollment")
-
-    chapter_220 <- chapter_220 %>%
-      rename("total_enrollment" = mke_out_sept) %>%
-      mutate(accurate_agency_type = "Chapter 220")
-
-    mke_enrollment_aat <<- bind_rows(mke_rc_aat, mke_oe, chapter_220)
-
 
   } else {
     stop("Did you specify 'broad' or 'accurate' for agency_type?")
