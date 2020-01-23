@@ -87,11 +87,27 @@ make_mke_enrollment <- function(agency_type = "broad") {
       filter(dpi_true_id %in% mke_schools$dpi_true_id) %>%
       left_join(., schools %>% select(dpi_true_id, school_name, broad_agency_type), by = "dpi_true_id")
 
-    mke_enrollment_bat <<- mke_rc %>%
+    mke_enrollment_bat <- mke_rc %>%
       select(school_year, broad_agency_type, "total_enrollment" = school_enrollment) %>%
       bind_rows(., other_enrollment %>% select(-accurate_agency_type)) %>%
       group_by(school_year, broad_agency_type) %>%
       summarise(total_enrollment = sum(total_enrollment, na.rm = TRUE))
+
+    mpcp <- choice_counts %>%
+      group_by(school_year) %>%
+      summarise(MPCP = sum(MPCP_count, na.rm = TRUE))
+
+    mke_snsp <- choice_counts %>%
+      filter(MPCP_count > 0) %>%
+      group_by(school_year) %>%
+      summarise(SNSP = sum(SNSP_count, na.rm = TRUE))
+
+    mpcp_snsp <- left_join(mpcp, mke_snsp, by = "school_year") %>%
+      mutate(total_enrollment = MPCP + SNSP,
+             broad_agency_type = "MPCP/SNSP") %>%
+      select(-c(MPCP, SNSP))
+
+    mke_enrollment_bat <<- bind_rows(mke_enrollment_bat, mpcp_snsp)
 
 
   } else if(agency_type == "accurate") {
@@ -102,11 +118,25 @@ make_mke_enrollment <- function(agency_type = "broad") {
       filter(dpi_true_id %in% mke_schools$dpi_true_id & (report_card_type != "Private - All Students" | is.na(report_card_type))) %>%
       left_join(., schools %>% select(dpi_true_id, school_name, accurate_agency_type), by = "dpi_true_id")
 
-    mke_enrollment_aat <<- mke_rc %>%
+    mke_enrollment_aat <- mke_rc %>%
       select(school_year, accurate_agency_type, "total_enrollment" = school_enrollment) %>%
       bind_rows(., other_enrollment %>% select(-broad_agency_type)) %>%
       group_by(school_year, accurate_agency_type) %>%
       summarise(total_enrollment = sum(total_enrollment, na.rm = TRUE))
+
+    mpcp <- choice_counts %>%
+      group_by(school_year) %>%
+      summarise(MPCP = sum(MPCP_count, na.rm = TRUE))
+
+    mke_snsp <- choice_counts %>%
+      filter(MPCP_count > 0) %>%
+      group_by(school_year) %>%
+      summarise(SNSP = sum(SNSP_count, na.rm = TRUE))
+
+    mpcp_snsp <- left_join(mpcp, mke_snsp, by = "school_year") %>%
+      pivot_longer(cols = 2:3, names_to = "accurate_agency_type", values_to = "total_enrollment")
+
+    mke_enrollment_aat <<- bind_rows(mke_enrollment_bat, mpcp_snsp)
 
   } else {
     stop("Did you specify 'broad' or 'accurate' for agency_type?")
