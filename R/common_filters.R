@@ -81,10 +81,10 @@ make_mke_enrollment <- function(agency_type = "broad") {
 
   if(agency_type == "broad") {
     mke_schools <- schools %>%
-      filter(MPCP == 1 | (city == "Milwaukee" & (district_name == "Milwaukee" | accurate_agency_type != "Private School") & locale_description != "Suburb"))
+      filter(choice_indicator == 0 | (city == "Milwaukee" & (district_name == "Milwaukee" | accurate_agency_type != "Private School") & locale_description != "Suburb"))
 
     mke_rc <- report_cards %>%
-      filter(dpi_true_id %in% mke_schools$dpi_true_id & (report_card_type != "Private - All Students" | is.na(report_card_type))) %>%
+      filter(dpi_true_id %in% mke_schools$dpi_true_id) %>%
       left_join(., schools %>% select(dpi_true_id, school_name, broad_agency_type), by = "dpi_true_id")
 
     mke_enrollment_bat <<- mke_rc %>%
