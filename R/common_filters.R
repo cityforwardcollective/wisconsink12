@@ -81,7 +81,7 @@ make_mke_enrollment <- function(agency_type = "broad") {
 
   if(agency_type == "broad") {
     mke_schools <- schools %>%
-      filter(choice_indicator == 0 & city == "Milwaukee" & district_name == "Milwaukee" & locale_description != "Suburb")
+      filter(broad_agency_type != "Private" & city == "Milwaukee" & district_name == "Milwaukee" & locale_description != "Suburb")
 
     mke_rc <- report_cards %>%
       filter(dpi_true_id %in% mke_schools$dpi_true_id) %>%
@@ -112,7 +112,7 @@ make_mke_enrollment <- function(agency_type = "broad") {
 
   } else if(agency_type == "accurate") {
     mke_schools <- schools %>%
-      filter(choice_indicator == 0 & city == "Milwaukee" & district_name == "Milwaukee" & locale_description != "Suburb")
+      filter(broad_agency_type != "Private" & city == "Milwaukee" & district_name == "Milwaukee" & locale_description != "Suburb")
 
     mke_rc <- report_cards %>%
       filter(dpi_true_id %in% mke_schools$dpi_true_id & (report_card_type != "Private - All Students" | is.na(report_card_type))) %>%
