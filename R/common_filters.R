@@ -136,7 +136,7 @@ make_mke_enrollment <- function(agency_type = "broad") {
     mpcp_snsp <- left_join(mpcp, mke_snsp, by = "school_year") %>%
       pivot_longer(cols = 2:3, names_to = "accurate_agency_type", values_to = "total_enrollment")
 
-    mke_enrollment_aat <<- bind_rows(mke_enrollment_bat, mpcp_snsp)
+    mke_enrollment_aat <<- bind_rows(mke_enrollment_aat, mpcp_snsp)
 
   } else {
     stop("Did you specify 'broad' or 'accurate' for agency_type?")
