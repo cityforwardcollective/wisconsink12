@@ -1,7 +1,7 @@
 Wisconsin K12 School Data
 ================
 Spencer Schien
-2020-01-06
+2020-02-03
 
 # Introduction
 
@@ -10,8 +10,8 @@ of publicly available data regarding K12 schools in Wisconsin and to
 facilitate analysis of that data.
 
 The data is organized in a relational database structure, where each
-table has a unique school identifier that facilitates joins. As of this
-writing, the following data tables are included:
+table has a unique school identifier that facilitates joins. Initially,
+the following data tables were included:
 
   - `schools` – This is a list of all schools in Wisconsin that serves
     as the unique identifier table for the relational database.
@@ -27,6 +27,11 @@ writing, the following data tables are included:
     rates cannot be calculated.
   - `report_cards` – This table contains Report Card data from all
     schools in Wisconsin.
+
+More tables have been/will be added, but information on these tables
+will be provided in vignette form, not enumerated in the list above. (As
+shown below, all tables available in `wisconsink12` will be listed upon
+loading the package.)
 
 # Installation
 
@@ -65,16 +70,25 @@ listing the tables that are available.
 # Load the package, then access the tables.
 
 library(wisconsink12)
+#> The following tables are now available:
+#> - schools
+#> - enrollment
+#> - report_cards
+#> - forward_exam
+#> - graduation
+#> - choice_counts
+#> - other_enrollment
+#> - act
 ```
 
-As the output shows, we indeed have access to the five tables listed
-above. We can inspect these tables as we would any dataframe.
+As the output shows, we indeed have access to the 8 tables listed above.
+We can inspect these tables as we would any dataframe.
 
 ``` r
 # Inspect the `schools` table
 
 str(schools)
-#> 'data.frame':    3237 obs. of  14 variables:
+#> 'data.frame':    3237 obs. of  15 variables:
 #>  $ dpi_true_id         : chr  "0000_0005" "0000_0052" "0000_0057" "0000_0070" ...
 #>  $ school_name         : chr  "Abbotsford Christian Academy" "Hillside Amish School" "Amish Parochial Schools" "Aquinas Middle" ...
 #>  $ agency_type         : chr  "Private school" "Private school" "Private school" "Private school" ...
@@ -83,7 +97,8 @@ str(schools)
 #>  $ choice_indicator    : num  0 0 0 1 1 0 1 0 1 0 ...
 #>  $ charter_indicator   : num  0 0 0 0 0 0 0 0 0 0 ...
 #>  $ last_year_open      : chr  "2018-19" "2018-19" "2018-19" "2018-19" ...
-#>  $ accurate_agency_type: chr  "Private School" "Private School" "Private School" "Private School" ...
+#>  $ accurate_agency_type: chr  "Private" "Private" "Private" "Private" ...
+#>  $ broad_agency_type   : chr  "Private" "Private" "Private" "Private" ...
 #>  $ locale_description  : chr  NA NA NA "NA" ...
 #>  $ city                : chr  NA NA NA "La Crosse" ...
 #>  $ MPCP                : num  0 0 0 0 0 0 0 0 1 0 ...
@@ -100,7 +115,8 @@ tables are available, you can access that information with the
 # `wisconsink12` package.
 
 list_tables()
-#> [1] "schools"      "enrollment"   "report_cards" "forward_exam" "graduation"
+#> [1] "schools"          "enrollment"       "report_cards"     "forward_exam"    
+#> [5] "graduation"       "choice_counts"    "other_enrollment" "act"
 ```
 
 # Most Common Uses
@@ -184,13 +200,17 @@ table(mke_rc$report_card_type, mke_rc$school_year) %>%
 
 |                           | 2015-16 | 2016-17 | 2017-18 | 2018-19 |
 | ------------------------- | ------: | ------: | ------: | ------: |
-| Private - Choice Students |       0 |     120 |     127 |     129 |
+| Private - Choice Students |       0 |     109 |     114 |     114 |
 | Public - All Students     |       0 |     176 |     178 |     180 |
 
 ## How many students are in schools that *Meet Expectations*?
 
 Now that we have our `mke_rc` table, let us ask how many students are
-enrolled\[1\] in schools that are rated *Meets Expectations* or higher.
+enrolled in schools that are rated *Meets Expectations* or higher.
+
+*Note that enrollment is a tricky number to pin down in some cases, and
+the easiest way to do this at the city-wide level is to use numbers
+included in the Report Card data release.*
 
 ``` r
 # Designate which ratings fall below 'Meeting Expectations'
@@ -228,9 +248,9 @@ meets_expecs
 #> # A tibble: 3 x 3
 #>   quality                  total_enrollment percent
 #>   <fct>                               <dbl> <chr>  
-#> 1 Not Meeting Expectations            32880 29%    
-#> 2 Meeting Expectations                77617 69%    
-#> 3 Not Rated                            1253 1%
+#> 1 Not Meeting Expectations            32834 30%    
+#> 2 Meeting Expectations                76702 69%    
+#> 3 Not Rated                            1085 1%
 
 # Visualize with bar graphs
 
@@ -246,7 +266,24 @@ receive a rating of *Meets Expectations* or higher.
 
 ## How Many Choice and Charter Schools are in Milwaukee?
 
-1.  Note that enrollment is a tricky number to pin down in some cases,
-    and the easiest way to do this at the city-wide level is to use
-    numbers included in the Report Card data release. ***Still being
-    updated…***
+The number of choice and charter schools in Milwaukee can be determined
+easily using the `report_cards` table. We use Report Card data since all
+choice and charter schools are required to have a Report Card – if we
+went off the `schools` table, we would include private schools that do
+not participate in a choice program.
+
+``` r
+mke_rc %>%
+  group_by(broad_agency_type, school_year) %>%
+  summarise(N = n()) %>%
+  pivot_wider(names_from = school_year, values_from = N) %>%
+  kable()
+```
+
+| broad\_agency\_type | 2015-16 | 2016-17 | 2017-18 | 2018-19 |
+| :------------------ | ------: | ------: | ------: | ------: |
+| District-Run        |     139 |     140 |     142 |     142 |
+| Independent Charter |      35 |      36 |      36 |      38 |
+| Private             |     107 |     109 |     114 |     114 |
+
+***Still being updated…***

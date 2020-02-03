@@ -12,20 +12,21 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
-library(wisconsink12)
 ```
 
 # Introduction
 
 The `wisconsink12` package was developed to increase the accessibility of publicly available data regarding K12 schools in Wisconsin and to facilitate analysis of that data.
 
-The data is organized in a relational database structure, where each table has a unique school identifier that facilitates joins.  As of this writing, the following data tables are included:
+The data is organized in a relational database structure, where each table has a unique school identifier that facilitates joins.  Initially, the following data tables were included:
 
 * `schools` -- This is a list of all schools in Wisconsin that serves as the unique identifier table for the relational database.
 * `enrollment` -- This table contains enrollment data for all Wisconsin schools. Disaggregated enrollment data is not available for private schools.
 * `forward_exam` -- This table contains forward exam results for public and Choice-participating private schools.  Disaggregated test results are not available for private schools.
 * `graduation` -- This table contains graduation and completion data for all public schools.  Private schools are not included here at all because cohort counts are not available for private schools, and so rates cannot be calculated.
 * `report_cards` -- This table contains Report Card data from all schools in Wisconsin.
+
+More tables have been/will be added, but information on these tables will be provided in vignette form, not enumerated in the list above. (As shown below, all tables available in `wisconsink12` will be listed upon loading the package.)
 
 # Installation
 
@@ -47,7 +48,7 @@ The `wisconsink12` package is built around the school data it makes available.  
 
 Once the `wisconsink12` package is loaded, a message will be displayed listing the tables that are available.
 
-```{r}
+```{r message=TRUE}
 # Trying to access tables before loading
 # the package will result in an error.
 
@@ -56,7 +57,7 @@ Once the `wisconsink12` package is loaded, a message will be displayed listing t
 library(wisconsink12)
 ```
 
-As the output shows, we indeed have access to the five tables listed above.  We can inspect these tables as we would any dataframe.
+As the output shows, we indeed have access to the `r length(list_tables())` tables listed above.  We can inspect these tables as we would any dataframe.
 
 ```{r}
 # Inspect the `schools` table
@@ -174,8 +175,17 @@ As we can see, nearly 7/10 students in Milwaukee are in schools that receive a r
 
 ## How Many Choice and Charter Schools are in Milwaukee?  
 
-[^1]: Note that enrollment is a tricky number to pin down in some cases, and the easiest way to do this at the city-wide level is to use numbers included in the Report Card data release.
- 
+The number of choice and charter schools in Milwaukee can be determined easily using the `report_cards` table. We use Report Card data since all choice and charter schools are required to have a Report Card -- if we went off the `schools` table, we would include private schools that do not participate in a choice program.
 
+
+```{r}
+mke_rc %>%
+  group_by(broad_agency_type, school_year) %>%
+  summarise(N = n()) %>%
+  pivot_wider(names_from = school_year, values_from = N) %>%
+  kable()
+
+
+```
 
 ***Still being updated...***
