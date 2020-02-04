@@ -1,7 +1,7 @@
 Wisconsin K12 School Data
 ================
 Spencer Schien
-2020-02-03
+2020-02-04
 
 # Introduction
 
@@ -115,8 +115,9 @@ tables are available, you can access that information with the
 # `wisconsink12` package.
 
 list_tables()
-#> [1] "schools"          "enrollment"       "report_cards"     "forward_exam"    
-#> [5] "graduation"       "choice_counts"    "other_enrollment" "act"
+#> [1] "schools"          "enrollment"       "report_cards"    
+#> [4] "forward_exam"     "graduation"       "choice_counts"   
+#> [7] "other_enrollment" "act"
 ```
 
 # Most Common Uses
@@ -126,6 +127,11 @@ any analysis the vast majority of the time. For example, you might want
 to perform an analysis on Report Card outcomes for Milwaukee schools. To
 easily filter for these schools, you can use the `make_mke_rc()`
 function.
+
+*Note: The `wisconsink12` package designates a schools as a Milwaukee
+school in filters if the school is located within city limits or if the
+school participates in the Milwaukee Parental Choice Program – many MPCP
+schools are located just outside of city limits.*
 
 ``` r
 # Call `make_mke_rc()` to create two tables:
@@ -248,15 +254,16 @@ meets_expecs
 #> # A tibble: 3 x 3
 #>   quality                  total_enrollment percent
 #>   <fct>                               <dbl> <chr>  
-#> 1 Not Meeting Expectations            32834 30%    
-#> 2 Meeting Expectations                76702 69%    
-#> 3 Not Rated                            1085 1%
+#> 1 Not Meeting Expectations            32834 29.7%  
+#> 2 Meeting Expectations                76702 69.3%  
+#> 3 Not Rated                            1085 1.0%
 
 # Visualize with bar graphs
 
 meets_expecs %>%
-  ggplot(aes(quality, total_enrollment)) +
-  geom_col()
+  ggplot(aes(quality, total_enrollment, label = percent)) +
+  geom_col() +
+  geom_text(aes(y = total_enrollment + 2500))
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
@@ -273,6 +280,8 @@ went off the `schools` table, we would include private schools that do
 not participate in a choice program.
 
 ``` r
+# Calculate the number of schools in each sector
+
 mke_rc %>%
   group_by(broad_agency_type, school_year) %>%
   summarise(N = n()) %>%
@@ -286,4 +295,57 @@ mke_rc %>%
 | Independent Charter |      35 |      36 |      36 |      38 |
 | Private             |     107 |     109 |     114 |     114 |
 
-***Still being updated…***
+## What is the Enrollment Breakdown Acress the Different Enrollment Vehicles?
+
+Calculating the breakdown of total enrollment in Milwaukee is difficult
+because there is not single data source that contains all available
+enrollment vehicles in which families engage.
+
+The code below calculates total enrollment as the sum of the following,
+based on September counts:
+
+1.  All students enrolled in public schools (i.e. traditional, charter,
+    partnership)
+2.  Mobile students counted as FAY for MPS district but no single school
+    (it is not currently possible to count all mobile students in
+    Milwaukee because if they are not captured by MPS district numbers,
+    they are not captured)
+3.  Total Milwaukee Parental Choice Program enrollment (which is not
+    necessarily the same as total choice enrollment at schools, as
+    reported in the Report Card because that number might include
+    non-Milwaukee students attending a Milwaukee school through the
+    Wisconsin Parental Choice Program)
+4.  Special Needs Scholarship Students attending MPCP schools
+5.  Open Enrolled students leaving Milwaukee
+6.  Chapter 220 Students leaving Milwaukee
+
+<!-- end list -->
+
+``` r
+make_mke_enrollment()
+make_mke_enrollment(agency_type = "accurate")
+
+# Enrollment by RC data
+mke_enr_ty <- mke_enrollment_bat %>%
+  filter(school_year == "2018-19")
+
+mke_enr_tya <- mke_enrollment_aat %>%
+  filter(school_year == "2018-19")
+
+mke_enr_tya %>%
+  arrange(desc(total_enrollment)) %>%
+  ggplot(aes(x = reorder(accurate_agency_type, -total_enrollment), total_enrollment, label = scales::comma(total_enrollment))) +
+  ggalt::geom_lollipop() +
+  geom_text(aes(y = total_enrollment + 5000)) +
+  scale_y_continuous(limits = c(0, 120000), labels = scales::comma) +
+  theme_minimal() +
+  scale_x_discrete(labels = function(x) str_wrap(x, 10)) +
+  theme(panel.grid.minor = element_blank(),
+        panel.grid.major.x = element_blank(),
+        axis.text.x = element_text(angle = 45, vjust = .75)) +
+  labs(x = "Agency/Program", y = "Total Enrollment",
+       title = paste("2018-19 Total Enrollment:", scales::comma(sum(mke_enr_tya$total_enrollment))),
+       caption = "Mobile Students number represents MPS District FAY students that are not FAY at any single school.")  
+```
+
+![](README_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
