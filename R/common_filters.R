@@ -8,8 +8,9 @@
 #' Report Card types.
 #' @param exclude_milwaukee Logical. If TRUE (default value), Milwaukee schools will be
 #' excluded from \code{wi_rc}.
-#' @import dplyr
+#'
 #' @importFrom magrittr %>%
+#'
 #' @export make_mke_schools
 #' @export make_mke_rc
 #' @export make_wi_rc
@@ -148,9 +149,7 @@ make_mke_enrollment <- function(agency_type = "broad") {
 # Estimate Subgroup Enrollment =================================================================
 
 #' @describeIn est_subgroup_enrollment Estimate Subgroup enrollment at the school-level based on Report Card numbers.
-
-
-est_subgroup_enrollment <- function(private_type = "choice", mke = TRUE, detail = ) {
+est_subgroup_enrollment <- function(private_type = "choice", mke = TRUE) {
 
   race <- c("per_am_in",
             "per_asian",
