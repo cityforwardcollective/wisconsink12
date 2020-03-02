@@ -14,6 +14,7 @@
 #' @export make_mke_rc
 #' @export make_wi_rc
 #' @export make_mke_enrollment
+#' @export est_subgroup_enrollment
 
 # School Lists =================================================================
 make_mke_schools <- function() {
@@ -142,3 +143,35 @@ make_mke_enrollment <- function(agency_type = "broad") {
     stop("Did you specify 'broad' or 'accurate' for agency_type?")
   }
 }
+
+
+# Estimate Subgroup Enrollment =================================================================
+
+#' @describeIn est_subgroup_enrollment Estimate Subgroup enrollment at the school-level based on Report Card numbers.
+
+
+est_subgroup_enrollment <- function(private_type = "choice", mke = TRUE, detail = ) {
+
+  race <- c("per_am_in",
+            "per_asian",
+            "per_b_aa",
+            "per_hisp_lat",
+            "per_nh_opi",
+            "per_white",
+            "per_tom")
+
+  report_cards %>%
+    filter(report_card_type != "Private - All Students" | is.na(report_card_type)) %>%
+    select(dpi_true_id, school_year, school_enrollment, starts_with("per")) %>%
+    pivot_longer(cols = starts_with("per"), names_to = "group", values_to = "percent") %>%
+    mutate(est_enrollment = school_enrollment * percent)
+
+
+  message("Choosing 'Private - Choice Students' report card type for private schools.")
+}
+
+
+
+
+
+
