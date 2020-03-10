@@ -20,9 +20,8 @@
 # School Lists =================================================================
 make_mke_schools <- function() {
   mke_schools <<- schools %>%
-    filter((MPCP == 1 & county == "Milwaukee") | # MPCP schools in Milwaukee County
-            (district_name == "Milwaukee" | (city == "Milwaukee" & accurate_agency_type != "Private School")) | # NIC, IC, Partnership, and Traditional
-             (city == "Milwaukee" & locale_description != "Suburb")) # Ind. Charters
+    filter((MPCP == 1 & county == "Milwaukee") |
+            (district_name == "Milwaukee" | (city == "Milwaukee" & accurate_agency_type != "Private School" & locale_description != "Suburb")))
 }
 
 # Report Card Lists =================================================================
