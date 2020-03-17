@@ -1,7 +1,7 @@
 ---
 title: "Wisconsin K12 School Data"
 author: "Spencer Schien"
-date: "`r Sys.Date()`"
+date: "Last Updated`r Sys.Date()`"
 output: github_document
 always_allow_html: true
 ---

@@ -20,7 +20,7 @@
 # School Lists =================================================================
 make_mke_schools <- function() {
   mke_schools <<- schools %>%
-    filter((MPCP == 1 & county == "Milwaukee") |
+    filter((.$MPCP == 1 & county == "Milwaukee") |
             (district_name == "Milwaukee" | (city == "Milwaukee" & accurate_agency_type != "Private School" & locale_description != "Suburb")))
 }
 
