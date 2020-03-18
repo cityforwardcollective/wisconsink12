@@ -18,7 +18,7 @@
 #' @export est_subgroup_enrollment
 
 # School Lists =================================================================
-make_mke_schools <- funcmaketion() {
+make_mke_schools <- function () {
   mke_schools <<- schools %>%
     filter((MPCP == 1 & county == "Milwaukee") |
             (district_name == "Milwaukee" | (city == "Milwaukee" & accurate_agency_type != "Private School" & locale_description != "Suburb")))
