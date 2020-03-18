@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 
 The `wisconsink12` package was developed to increase the accessibility of publicly available data regarding K12 schools in Wisconsin and to facilitate analysis of that data.
 
-> :star: *Data is also written to a SQLite database, which is not tracked in this repository but is available for those wishing to access the data outside of R. Contact Spencer Schien (<spencer.schien@cityforwardcollective.org>) if you are interested.*
+> :star: *Data is also written to a SQLite database, which is not tracked in this repository but is available for those wishing to access the data without using R. Contact Spencer Schien (<spencer.schien@cityforwardcollective.org>) if you are interested.*
 
 The data is organized in a relational database structure, where each table has a unique school identifier that facilitates joins.  The following data tables are included:
 

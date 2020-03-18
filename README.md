@@ -11,7 +11,7 @@ facilitate analysis of that data.
 
 > :star: *Data is also written to a SQLite database, which is not
 > tracked in this repository but is available for those wishing to
-> access the data outside of R. Contact Spencer Schien
+> access the data without using R. Contact Spencer Schien
 > (<spencer.schien@cityforwardcollective.org>) if you are interested.*
 
 The data is organized in a relational database structure, where each
