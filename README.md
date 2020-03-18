@@ -1,7 +1,7 @@
 Wisconsin K12 School Data
 ================
-Package Maintained by Spencer Schien –
-Last Updated 2020-03-18
+Package maintained by Spencer Schien –
+Last updated 2020-03-18
 
 # Introduction
 
@@ -11,12 +11,12 @@ facilitate analysis of that data.
 
 > :star: *Data is also written to a SQLite database, which is not
 > tracked in this repository but is available for those wishing to
-> access the data outside of R. Contact Spencer Schien if you are
-> interested.*
+> access the data outside of R. Contact Spencer Schien
+> (<spencer.schien@cityforwardcollective.org>) if you are interested.*
 
 The data is organized in a relational database structure, where each
-table has a unique school identifier that facilitates joins. Initially,
-the following data tables were included:
+table has a unique school identifier that facilitates joins. The
+following data tables are included:
 
   - `schools` – This is a list of all schools in Wisconsin that serves
     as the unique identifier table for the relational database.
@@ -347,7 +347,7 @@ mke_enr_tya <- mke_enrollment_aat %>%
 
 mke_enr_tya %>%
   arrange(desc(total_enrollment)) %>%
-  ggplot(aes(x = reorder(accurate_agency_type, -total_enrollment), total_enrollment, label = scales::comma(total_enrollment))) +
+  ggplot(aes(x = reorder(accurate_agency_type, -total_enrollment), total_enrollment, label = scales::comma(total_enrollment, 1))) +
   ggalt::geom_lollipop() +
   geom_text(aes(y = total_enrollment + 5000)) +
   scale_y_continuous(limits = c(0, 120000), labels = scales::comma) +

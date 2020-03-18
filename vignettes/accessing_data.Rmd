@@ -4,33 +4,40 @@ author: "Spencer Schien"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{Accessing Wisconsin K12 Data}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+  \usepackage[utf8]{inputenc}
 ---
-
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+
 ```
 
 # Introduction
 
 The `wisconsink12` package was developed to increase the accessibility of publicly available data regarding K12 schools in Wisconsin and to facilitate analysis of that data.
 
-The data is organized in a relational database structure, where each table has a unique school identifier that facilitates joins.  As of this writing, the following data tables are included:
+> *Data is also written to a SQLite database, which is not tracked in this repository but is available for those wishing to access the data outside of R. Contact Spencer Schien (<spencer.schien@cityforwardcollective.org>) if you are interested.*
+
+The data is organized in a relational database structure, where each table has a unique school identifier that facilitates joins.  The following data tables are included:
 
 * `schools` -- This is a list of all schools in Wisconsin that serves as the unique identifier table for the relational database.
 * `enrollment` -- This table contains enrollment data for all Wisconsin schools. Disaggregated enrollment data is not available for private schools.
-* `forward_exam` -- This table contains forward exam results for public and Choice-participating private schools.  Disaggregated test results are not available for private schools.
+* `forward_exam` -- This table contains Forward Exam results for public and Choice-participating private schools.  Disaggregated test results are not available for private schools.
 * `graduation` -- This table contains graduation and completion data for all public schools.  Private schools are not included here at all because cohort counts are not available for private schools, and so rates cannot be calculated.
-* `report_cards` -- this table contains Report Card data from all schools in Wisconsin.
+* `report_cards` -- This table contains Report Card data from all schools in Wisconsin.
+* `act` -- This table contains ACT results for public and Choice-participating private schools.  Disaggregated test results are not available for private schools.
+* `choice_counts` -- This table contains counts of students participating in the Milwaukee, Racine, and Wisconsin Parental Choice Programs, as well as the Special Needs Scholarship Program.  
+* `other_enrollment` -- This table provides counts of students missed by other reporting methods (i.e. mobile students, Open Enrollment, Chapter 220).
+
+More tables have been/will be added, but information on these tables will be provided in vignette form, not enumerated in the list above. (As shown below, all tables available in `wisconsink12` will be listed upon loading the package.)
 
 # Installation
 
-As of this writing, there are no plans to submit the `wisconsink12` package to CRAN, so it must be downloaded from City Forward Collective's [GitHub repository]("https://github.com/cityforwardcollective").  This can be achieved with the following code.
+As of this writing, there are no plans to submit the `wisconsink12` package to CRAN, so it must be downloaded from City Forward Collective's [GitHub repository](https://github.com/cityforwardcollective).  This can be achieved with the following code.
 
 ```{r eval=FALSE}
 # The devtools package is required
@@ -40,22 +47,194 @@ As of this writing, there are no plans to submit the `wisconsink12` package to C
 devtools::install_github("cityforwardcollective/wisconsink12")
 ```
 
-# Usage
+# Accessing the Data
 
-The `wisconsink12` package is built around the school data it makes available.  This data is organized into tables (listed above), and each table contains a school ID field called the `dpi_true_id`.  This field is a concatenation of a school's District Code and its School Code, with a '_' inbetween.  Both codes are padded with zeros on the left to a length of four, and choice schools are given a District Code of '0000'.  
+## Milwaukee School Report Cards
+
+The `wisconsink12` package is built around the school data it makes available.  This data is organized into tables (listed above), and each table contains a school ID field called the `dpi_true_id`.  This field is a concatenation of a school's District Code and its School Code, with an underscore '_' in between.  Both codes are padded with zeros on the left to a length of four, and choice schools are given a District Code of '0000'.
 
 Once the `wisconsink12` package is loaded, a message will be displayed listing the tables that are available.
 
-```{r}
+```{r message=TRUE}
 # Trying to access tables before loading
 # the package will result in an error.
 
 # Load the package, then access the tables.
 
 library(wisconsink12)
+```
 
-# Inspect the first table
+As the output shows, we indeed have access to the `r length(list_tables())` tables listed above.  We can inspect these tables as we would any dataframe.
+
+```{r}
+# Inspect the `schools` table
+
 str(schools)
 ```
 
+If you get further along after loading the package and you forget what tables are available, you can access that information with the `list_tables()` function.
+
+```{r}
+# List the tables available in the 
+# `wisconsink12` package.
+
+list_tables()
+```
+
+# Most Common Uses
+
+There are a few slices of this data that will be a starting point for any analysis the vast majority of the time.  For example, you might want to perform an analysis on Report Card outcomes for Milwaukee schools.  To easily filter for these schools, you can use the `make_mke_rc()` function.
+
+*Note: The `wisconsink12` package designates a schools as a Milwaukee school in filters if the school is located within city limits or if the school participates in the Milwaukee Parental Choice Program -- many MPCP schools are located just outside of city limits.*
+
+```{r}
+# Call `make_mke_rc()` to create two tables:
+# `mke_schools` table and `mke_rc` table 
+
+make_mke_rc()
+
+# List environment objects with `ls()`
+
+ls()
+```
+
+The primary result of this function is to create `mke_rc`, a table of Report Card data filtered for Milwaukee schools.  A secondary result is the creation of the `mke_schools` table, which contains a unique list of Wisconsin schools along with certain information on those schools such as agency type, last year the school was open, etc.
+
+An important item to note is that private schools participating in a parental choice program in Wisconsin are required to have a report card for their students attending with voucher funds, and they have the option to receive a report card for all of their students.  The functions in the `wisconsink12` package by default filter for the choice students (designated as the *Private - Choice Students* report card in the `report_card_type` field of the `report_cards` table).  This filter can be changed with the `private_type` argument -- setting it as "all" would filter for the *Private - All Students* report card.
+
+
+```{r}
+# make_mke_rc() was run above, 
+# with default private_type = "choice"
+
+# Examine unique report card types
+
+unique(mke_rc$report_card_type)
+
+# Call make_mke_rc() again, 
+# with default private_type = "s"
+
+make_mke_rc(private_type = "all")
+
+# Examine unique report card types
+
+unique(mke_rc$report_card_type)
+```
+
+We see from the two `unique()` calls that `NA` values remain in both instances -- this is because this field didn't exist for the 2015-16 Report Cards since no private schools had scores computed that year.  We also see that the second `unique()` call still shows *Private - Choice Students* among the unique values, even though we set `private_type` to "all".  This is because designating "all" chooses the *Private - All Students* report card type *when it is available* -- as mentioned above, schools only have that report card type if they elect to do so.
+
+```{r message=FALSE, warning=FALSE}
+make_mke_rc()
+
+library(knitr) # `knitr` needed for `kable()` below
+library(tidyverse) # tidyverse will be used throughout
+
+table(mke_rc$report_card_type, mke_rc$school_year) %>%
+  kable()
+```
+
+## How many students are in schools that *Meet Expectations*? 
+
+Now that we have our `mke_rc` table, let us ask how many students are enrolled in schools that are rated *Meets Expectations* or higher.  
+
+*Note that enrollment is a tricky number to pin down in some cases, and the easiest way to do this at the city-wide level is to use numbers included in the Report Card data release.*
+
+```{r}
+# Designate which ratings fall below 'Meeting Expectations'
+
+low_performers <- c("Alternate Rating - Needs Improvement",
+                    "Fails to Meet Expectations",
+                    "Fails to Meed Expectations^",
+                    "Meets Few Expectations",
+                    "Meets Few Expectations^")
+
+# Designate which ratings should be excluded from buckets
+
+not_rated <- c("Not Rated",
+               "NR-DATA")
+
+# Create `quality` field that designates meeting expecs or not
+
+meets_expecs <- mke_rc %>%
+  filter(school_year == "2018-19") %>%
+  mutate(quality = ifelse(overall_rating %in% low_performers, "Not Meeting Expectations", 
+                          ifelse(overall_rating %in% not_rated, "Not Rated", "Meeting Expectations"))) %>%
+  modify_at("quality", factor, levels = c("Not Meeting Expectations",
+                                          "Meeting Expectations",
+                                          "Not Rated")) %>%
+  group_by(quality) %>%
+  summarise(total_enrollment = sum(school_enrollment)) %>%
+  
+  # Calculate percentage of total
+  
+  mutate(percent = scales::percent(total_enrollment/sum(total_enrollment)))
+
+# Return the data to inspect it
+
+meets_expecs
+
+# Visualize with bar graphs
+
+meets_expecs %>%
+  ggplot(aes(quality, total_enrollment, label = percent)) +
+  geom_col() +
+  geom_text(aes(y = total_enrollment + 2500))
+```
+
+As we can see, nearly 7/10 students in Milwaukee are in schools that receive a rating of *Meets Expectations* or higher.
+
+## How Many Choice and Charter Schools are in Milwaukee?  
+
+The number of choice and charter schools in Milwaukee can be determined easily using the `report_cards` table. We use Report Card data since all choice and charter schools are required to have a Report Card -- if we went off the `schools` table, we would include private schools that do not participate in a choice program.
+
+
+```{r}
+# Calculate the number of schools in each sector
+
+mke_rc %>%
+  group_by(broad_agency_type, school_year) %>%
+  summarise(N = n()) %>%
+  pivot_wider(names_from = school_year, values_from = N) %>%
+  kable()
+```
+
+## What is the Enrollment Breakdown Across the Different Enrollment Vehicles?
+
+Calculating the breakdown of total enrollment in Milwaukee is difficult because there is not single data source that contains all available enrollment vehicles in which families engage.  
+
+The code below calculates total enrollment as the sum of the following, based on September counts:
+
+1. All students enrolled in public schools (i.e. traditional, charter, partnership)
+1. Mobile students counted as FAY for MPS district but no single school (it is not currently possible to count all mobile students in Milwaukee because if they are not captured by MPS district numbers, they are not captured)
+1. Total Milwaukee Parental Choice Program enrollment (which is not necessarily the same as total choice enrollment at schools, as reported in the Report Card because that number might include non-Milwaukee students attending a Milwaukee school through the Wisconsin Parental Choice Program)
+1. Special Needs Scholarship Students attending MPCP schools
+1. Open Enrolled students leaving Milwaukee
+1. Chapter 220 Students leaving Milwaukee
+
+```{r message=FALSE}
+make_mke_enrollment()
+make_mke_enrollment(agency_type = "accurate")
+
+# Enrollment by RC data
+mke_enr_ty <- mke_enrollment_bat %>%
+  filter(school_year == "2018-19")
+
+mke_enr_tya <- mke_enrollment_aat %>%
+  filter(school_year == "2018-19")
+
+mke_enr_tya %>%
+  arrange(desc(total_enrollment)) %>%
+  ggplot(aes(x = reorder(accurate_agency_type, -total_enrollment), total_enrollment, label = scales::comma(total_enrollment, 1))) +
+  ggalt::geom_lollipop() +
+  geom_text(aes(y = total_enrollment + 5000)) +
+  scale_y_continuous(limits = c(0, 120000), labels = scales::comma) +
+  theme_minimal() +
+  scale_x_discrete(labels = function(x) str_wrap(x, 10)) +
+  theme(panel.grid.minor = element_blank(),
+        panel.grid.major.x = element_blank(),
+        axis.text.x = element_text(angle = 45, vjust = .75)) +
+  labs(x = "Agency/Program", y = "Total Enrollment",
+       title = paste("2018-19 Total Enrollment:", scales::comma(sum(mke_enr_tya$total_enrollment))),
+       caption = "Mobile Students number represents MPS District FAY students that are not FAY at any single school.")  
+```
 
