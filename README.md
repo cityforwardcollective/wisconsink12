@@ -1,13 +1,18 @@
 Wisconsin K12 School Data
 ================
-Spencer Schien
-2020-02-04
+Package Maintained by Spencer Schien –
+Last Updated 2020-03-18
 
 # Introduction
 
 The `wisconsink12` package was developed to increase the accessibility
 of publicly available data regarding K12 schools in Wisconsin and to
 facilitate analysis of that data.
+
+> :star: *Data is also written to a SQLite database, which is not
+> tracked in this repository but is available for those wishing to
+> access the data outside of R. Contact Spencer Schien if you are
+> interested.*
 
 The data is organized in a relational database structure, where each
 table has a unique school identifier that facilitates joins. Initially,
@@ -18,7 +23,7 @@ the following data tables were included:
   - `enrollment` – This table contains enrollment data for all Wisconsin
     schools. Disaggregated enrollment data is not available for private
     schools.
-  - `forward_exam` – This table contains forward exam results for public
+  - `forward_exam` – This table contains Forward Exam results for public
     and Choice-participating private schools. Disaggregated test results
     are not available for private schools.
   - `graduation` – This table contains graduation and completion data
@@ -27,6 +32,15 @@ the following data tables were included:
     rates cannot be calculated.
   - `report_cards` – This table contains Report Card data from all
     schools in Wisconsin.
+  - `act` – This table contains ACT results for public and
+    Choice-participating private schools. Disaggregated test results are
+    not available for private schools.
+  - `choice_counts` – This table contains counts of students
+    participating in the Milwaukee, Racine, and Wisconsin Parental
+    Choice Programs, as well as the Special Needs Scholarship Program.  
+  - `other_enrollment` – This table provides counts of students missed
+    by other reporting methods (i.e. mobile students, Open Enrollment,
+    Chapter 220).
 
 More tables have been/will be added, but information on these tables
 will be provided in vignette form, not enumerated in the list above. (As
@@ -88,7 +102,7 @@ We can inspect these tables as we would any dataframe.
 # Inspect the `schools` table
 
 str(schools)
-#> 'data.frame':    3237 obs. of  15 variables:
+#> 'data.frame':    3276 obs. of  15 variables:
 #>  $ dpi_true_id         : chr  "0000_0005" "0000_0052" "0000_0057" "0000_0070" ...
 #>  $ school_name         : chr  "Abbotsford Christian Academy" "Hillside Amish School" "Amish Parochial Schools" "Aquinas Middle" ...
 #>  $ agency_type         : chr  "Private school" "Private school" "Private school" "Private school" ...
@@ -115,9 +129,8 @@ tables are available, you can access that information with the
 # `wisconsink12` package.
 
 list_tables()
-#> [1] "schools"          "enrollment"       "report_cards"    
-#> [4] "forward_exam"     "graduation"       "choice_counts"   
-#> [7] "other_enrollment" "act"
+#> [1] "schools"          "enrollment"       "report_cards"     "forward_exam"    
+#> [5] "graduation"       "choice_counts"    "other_enrollment" "act"
 ```
 
 # Most Common Uses
@@ -254,9 +267,9 @@ meets_expecs
 #> # A tibble: 3 x 3
 #>   quality                  total_enrollment percent
 #>   <fct>                               <dbl> <chr>  
-#> 1 Not Meeting Expectations            32834 29.7%  
-#> 2 Meeting Expectations                76702 69.3%  
-#> 3 Not Rated                            1085 1.0%
+#> 1 Not Meeting Expectations            32834 30%    
+#> 2 Meeting Expectations                76702 69%    
+#> 3 Not Rated                            1085 1%
 
 # Visualize with bar graphs
 
@@ -291,11 +304,11 @@ mke_rc %>%
 
 | broad\_agency\_type | 2015-16 | 2016-17 | 2017-18 | 2018-19 |
 | :------------------ | ------: | ------: | ------: | ------: |
-| District-Run        |     139 |     140 |     142 |     142 |
+| District-Operated   |     139 |     140 |     142 |     142 |
 | Independent Charter |      35 |      36 |      36 |      38 |
 | Private             |     107 |     109 |     114 |     114 |
 
-## What is the Enrollment Breakdown Acress the Different Enrollment Vehicles?
+## What is the Enrollment Breakdown Across the Different Enrollment Vehicles?
 
 Calculating the breakdown of total enrollment in Milwaukee is difficult
 because there is not single data source that contains all available

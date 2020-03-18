@@ -1,7 +1,7 @@
 ---
 title: "Wisconsin K12 School Data"
-author: "Spencer Schien"
-date: "Last Updated`r Sys.Date()`"
+author: "Package Maintained by Spencer Schien -- "
+date: "Last Updated `r Sys.Date()`"
 output: github_document
 always_allow_html: true
 ---
@@ -18,13 +18,18 @@ knitr::opts_chunk$set(
 
 The `wisconsink12` package was developed to increase the accessibility of publicly available data regarding K12 schools in Wisconsin and to facilitate analysis of that data.
 
+> :star: *Data is also written to a SQLite database, which is not tracked in this repository but is available for those wishing to access the data outside of R. Contact Spencer Schien if you are interested.*
+
 The data is organized in a relational database structure, where each table has a unique school identifier that facilitates joins.  Initially, the following data tables were included:
 
 * `schools` -- This is a list of all schools in Wisconsin that serves as the unique identifier table for the relational database.
 * `enrollment` -- This table contains enrollment data for all Wisconsin schools. Disaggregated enrollment data is not available for private schools.
-* `forward_exam` -- This table contains forward exam results for public and Choice-participating private schools.  Disaggregated test results are not available for private schools.
+* `forward_exam` -- This table contains Forward Exam results for public and Choice-participating private schools.  Disaggregated test results are not available for private schools.
 * `graduation` -- This table contains graduation and completion data for all public schools.  Private schools are not included here at all because cohort counts are not available for private schools, and so rates cannot be calculated.
 * `report_cards` -- This table contains Report Card data from all schools in Wisconsin.
+* `act` -- This table contains ACT results for public and Choice-participating private schools.  Disaggregated test results are not available for private schools.
+* `choice_counts` -- This table contains counts of students participating in the Milwaukee, Racine, and Wisconsin Parental Choice Programs, as well as the Special Needs Scholarship Program.  
+* `other_enrollment` -- This table provides counts of students missed by other reporting methods (i.e. mobile students, Open Enrollment, Chapter 220).
 
 More tables have been/will be added, but information on these tables will be provided in vignette form, not enumerated in the list above. (As shown below, all tables available in `wisconsink12` will be listed upon loading the package.)
 
@@ -191,7 +196,7 @@ mke_rc %>%
   kable()
 ```
 
-## What is the Enrollment Breakdown Acress the Different Enrollment Vehicles?
+## What is the Enrollment Breakdown Across the Different Enrollment Vehicles?
 
 Calculating the breakdown of total enrollment in Milwaukee is difficult because there is not single data source that contains all available enrollment vehicles in which families engage.  
 
