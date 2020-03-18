@@ -10,6 +10,7 @@
 #' excluded from \code{wi_rc}.
 #'
 #' @importFrom magrittr %>%
+#' @import dplyr
 #'
 #' @export make_mke_schools
 #' @export make_mke_rc
@@ -19,9 +20,11 @@
 
 # School Lists =================================================================
 make_mke_schools <- function () {
-  mke_schools <<- schools %>%
+  mke_schools <- schools %>%
     filter((MPCP == 1 & county == "Milwaukee") |
             (district_name == "Milwaukee" | (city == "Milwaukee" & accurate_agency_type != "Private School" & locale_description != "Suburb")))
+
+  return(mke_schools)
 }
 
 # Report Card Lists =================================================================
@@ -31,13 +34,13 @@ make_mke_rc <- function(private_type = "choice") {
   make_mke_schools()
 
   if(private_type == "choice") {
-    mke_rc <<- report_cards %>%
+    mke_rc <- report_cards %>%
       filter(dpi_true_id %in% mke_schools$dpi_true_id & (report_card_type != "Private - All Students" | is.na(report_card_type))) %>%
       left_join(., schools %>% select(dpi_true_id, school_name, broad_agency_type, accurate_agency_type), by = "dpi_true_id")
 
     message("Choosing 'Private - Choice Students' report card type for private schools.")
   } else if(private_type == "all") {
-    mke_rc <<- report_cards %>%
+    mke_rc <- report_cards %>%
      filter(dpi_true_id %in% mke_schools$dpi_true_id & !(has_2_rc == 1 & report_card_type == "Private - Choice Students")) %>%
       left_join(., schools %>% select(dpi_true_id, school_name, broad_agency_type, accurate_agency_type), by = "dpi_true_id")
 
@@ -45,6 +48,8 @@ make_mke_rc <- function(private_type = "choice") {
   } else {
     stop("Did you specify 'choice' or 'all' for private_type?")
   }
+
+  return(mke_rc)
 }
 
 #' @describeIn make_mke_schools Make a dataframe of Wisconsin schools' Report Card data.
@@ -52,29 +57,31 @@ make_wi_rc <- function(exclude_milwaukee = TRUE, private_type = "choice") {
   make_mke_schools()
 
   if(exclude_milwaukee == TRUE) {
-    wi_rc <<- report_cards %>%
+    wi_rc <- report_cards %>%
         filter(!dpi_true_id %in% mke_schools$dpi_true_id)
 
     message("Excluding Milwaukee schools.")
   } else {
-    wi_rc <<- report_cards
+    wi_rc <- report_cards
 
     message("Including Milwaukee schools.")
   }
 
   if(private_type == "choice") {
-    wi_rc <<- wi_rc %>%
+    wi_rc <- wi_rc %>%
       filter(report_card_type == "Private - Choice Students")
 
     message("Choosing 'Private - Choice Students' report card type for private schools.")
   } else if(private_type == "all") {
-    wi_rc <<- wi_rc %>%
+    wi_rc <- wi_rc %>%
     filter(report_card_type == "Private - All Students")
 
     message("Choosing 'Private - All Students' report card type for private schools.")
   } else {
     stop("Did you specify 'choice' or 'all' for private_type?")
   }
+
+  return(wi_rc)
 }
 
 # Enrollment Lists =================================================================
@@ -110,7 +117,9 @@ make_mke_enrollment <- function(agency_type = "broad") {
              broad_agency_type = "MPCP/SNSP") %>%
       select(-c(MPCP, SNSP))
 
-    mke_enrollment_bat <<- bind_rows(mke_enrollment_bat, mpcp_snsp)
+    mke_enrollment_bat <- bind_rows(mke_enrollment_bat, mpcp_snsp)
+
+    return(mke_enrollment_bat)
 
 
   } else if(agency_type == "accurate") {
@@ -139,7 +148,9 @@ make_mke_enrollment <- function(agency_type = "broad") {
     mpcp_snsp <- left_join(mpcp, mke_snsp, by = "school_year") %>%
       pivot_longer(cols = 2:3, names_to = "accurate_agency_type", values_to = "total_enrollment")
 
-    mke_enrollment_aat <<- bind_rows(mke_enrollment_aat, mpcp_snsp)
+    mke_enrollment_aat <- bind_rows(mke_enrollment_aat, mpcp_snsp)
+
+    return(mke_enrollment_aat)
 
   } else {
     stop("Did you specify 'broad' or 'accurate' for agency_type?")
