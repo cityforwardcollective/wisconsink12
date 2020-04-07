@@ -1,7 +1,7 @@
 Wisconsin K12 School Data
 ================
 Package maintained by Spencer Schien –
-Last updated 2020-03-18
+Last updated 2020-04-07
 
 # Introduction
 
@@ -9,10 +9,11 @@ The `wisconsink12` package was developed to increase the accessibility
 of publicly available data regarding K12 schools in Wisconsin and to
 facilitate analysis of that data.
 
-> :star: *Data is also written to a SQLite database, which is not
-> tracked in this repository but is available for those wishing to
-> access the data without using R. Contact Spencer Schien
-> (<spencer.schien@cityforwardcollective.org>) if you are interested.*
+> :star: *Data is also written to a SQLite database, which which can be
+> downloaded
+> [here](https://www.dropbox.com/s/2ydutmlpffbhpx8/school_db.sqlite?dl=0)
+> via Dropbox. Data dictionaries can be accessed outside of R in this
+> [repository](https://github.com/cityforwardcollective/wi_schools).*
 
 The data is organized in a relational database structure, where each
 table has a unique school identifier that facilitates joins. The
