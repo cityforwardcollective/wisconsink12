@@ -85,15 +85,16 @@ make_wi_rc <- function(exclude_milwaukee = TRUE, private_type = "choice") {
 make_mke_enrollment <- function(agency_type = "broad") {
 
   if(agency_type == "broad") {
+
     mke_schools <- schools %>%
       filter(broad_agency_type != "Private" & city == "Milwaukee" & locale_description != "Suburb")
 
-    mke_rc <- report_cards %>%
-      filter(dpi_true_id %in% mke_schools$dpi_true_id) %>%
+    mke_rc <- enrollment %>%
+      filter(dpi_true_id %in% mke_schools$dpi_true_id & group_by_value == "All Students") %>%
       left_join(., schools %>% select(dpi_true_id, school_name, broad_agency_type), by = "dpi_true_id")
 
     mke_enrollment_bat <- mke_rc %>%
-      select(school_year, broad_agency_type, "total_enrollment" = school_enrollment) %>%
+      select(school_year, broad_agency_type, "total_enrollment" = student_count) %>%
       bind_rows(., other_enrollment %>% select(-accurate_agency_type)) %>%
       group_by(school_year, broad_agency_type) %>%
       summarise(total_enrollment = sum(total_enrollment, na.rm = TRUE))
@@ -119,12 +120,12 @@ make_mke_enrollment <- function(agency_type = "broad") {
     mke_schools <- schools %>%
       filter(broad_agency_type != "Private" & city == "Milwaukee" & locale_description != "Suburb")
 
-    mke_rc <- report_cards %>%
-      filter(dpi_true_id %in% mke_schools$dpi_true_id & (report_card_type != "Private - All Students" | is.na(report_card_type))) %>%
+    mke_rc <- enrollment %>%
+      filter(dpi_true_id %in% mke_schools$dpi_true_id & group_by_value == "All Students") %>%
       left_join(., schools %>% select(dpi_true_id, school_name, accurate_agency_type), by = "dpi_true_id")
 
     mke_enrollment_aat <- mke_rc %>%
-      select(school_year, accurate_agency_type, "total_enrollment" = school_enrollment) %>%
+      select(school_year, accurate_agency_type, "total_enrollment" = student_count) %>%
       bind_rows(., other_enrollment %>% select(-broad_agency_type)) %>%
       group_by(school_year, accurate_agency_type) %>%
       summarise(total_enrollment = sum(total_enrollment, na.rm = TRUE))
