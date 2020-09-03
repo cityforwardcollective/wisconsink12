@@ -21,9 +21,20 @@
 
 # School Lists =================================================================
 make_mke_schools <- function () {
-  mke_schools <<- schools %>%
+  mke_schools_ <- schools %>%
     filter((MPCP == 1 & county == "Milwaukee") |
             (district_name == "Milwaukee" | (city == "Milwaukee" & accurate_agency_type != "Private" & locale_description != "Suburb")))
+
+  filter_test <- mke_schools_ %>%
+    filter(dpi_true_id == "0000_1712")
+
+  if(nrow(filter_test) != 1)
+  {
+    stop("Filtering error with MPCP schools outside of city limits. See Cristo Rey as example not included in mke_schools table.")
+  }
+
+  mke_schools <<- mke_schools_
+
 }
 
 # Report Card Lists =================================================================
