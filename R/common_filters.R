@@ -79,17 +79,13 @@ make_wi_rc <- function(exclude_milwaukee = TRUE, private_type = "choice") {
   if (exclude_milwaukee == TRUE) {
 
     wi_rc <- report_cards %>%
-        filter(!dpi_true_id %in% mke_schools$dpi_true_id & (report_card_type != "Private - All Students" | is.na(report_card_type)))
-
-    return(wi_rc)
+        filter(!dpi_true_id %in% mke_schools$dpi_true_id)
 
     message("Excluding Milwaukee schools.")
 
   } else {
-    wi_rc <- report_cards %>%
-      filter(report_card_type != "Private - All Students" | is.na(report_card_type))
 
-    return(wi_rc)
+    wi_rc <- report_cards
 
     message("Including Milwaukee schools.")
 
@@ -98,7 +94,8 @@ make_wi_rc <- function(exclude_milwaukee = TRUE, private_type = "choice") {
   if (private_type == "choice") {
 
     wi_rc <- wi_rc %>%
-      filter(report_card_type == "Private - Choice Students")
+      filter(report_card_type == "Private - Choice Students" | is.na(report_card_type)) %>%
+      left_join(., schools %>% select(dpi_true_id, school_name, broad_agency_type, accurate_agency_type), by = "dpi_true_id")
 
     return(wi_rc)
 
@@ -106,8 +103,10 @@ make_wi_rc <- function(exclude_milwaukee = TRUE, private_type = "choice") {
 
   } else if (private_type == "all")
     {
+
     wi_rc <- wi_rc %>%
-    filter(report_card_type == "Private - All Students")
+      filter(!(has_2_rc == 1 & report_card_type == "Private - Choice Students")) %>%
+      left_join(., schools %>% select(dpi_true_id, school_name, broad_agency_type, accurate_agency_type), by = "dpi_true_id")
 
     return(wi_rc)
 
