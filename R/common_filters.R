@@ -94,7 +94,7 @@ make_wi_rc <- function(exclude_milwaukee = TRUE, private_type = "choice") {
   if (private_type == "choice") {
 
     wi_rc <- wi_rc %>%
-      filter(report_card_type == "Private - Choice Students" | is.na(report_card_type)) %>%
+      filter(report_card_type != "Private - All Students" | is.na(report_card_type)) %>%
       left_join(., schools %>% select(dpi_true_id, school_name, broad_agency_type, accurate_agency_type), by = "dpi_true_id")
 
     return(wi_rc)
