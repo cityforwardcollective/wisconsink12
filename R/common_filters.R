@@ -20,7 +20,8 @@
 #' @export est_subgroup_enrollment
 
 # School Lists =================================================================
-make_mke_schools <- function () {
+make_mke_schools <- function() {
+
   mke_schools_ <- schools %>%
     filter((MPCP == 1 & county == "Milwaukee") |
             (district_name == "Milwaukee" | (city == "Milwaukee" & accurate_agency_type != "Private" & locale_description != "Suburb")))
@@ -28,12 +29,12 @@ make_mke_schools <- function () {
   filter_test <- mke_schools_ %>%
     filter(dpi_true_id == "0000_1712")
 
-  if(nrow(filter_test) != 1)
+  if (nrow(filter_test) != 1)
   {
     stop("Filtering error with MPCP schools outside of city limits. See Cristo Rey as example not included in mke_schools table.")
   }
 
-  mke_schools <<- mke_schools_
+  return(mke_schools_)
 
 }
 
@@ -41,52 +42,81 @@ make_mke_schools <- function () {
 
 #' @describeIn make_mke_schools Make a dataframe of Milwaukee schools' Report Card data.
 make_mke_rc <- function(private_type = "choice") {
-  make_mke_schools()
 
-  if(private_type == "choice") {
-    mke_rc <<- report_cards %>%
+  mke_schools <- make_mke_schools()
+
+  if (private_type == "choice") {
+    mke_rc <- report_cards %>%
       filter(dpi_true_id %in% mke_schools$dpi_true_id & (report_card_type != "Private - All Students" | is.na(report_card_type))) %>%
       left_join(., schools %>% select(dpi_true_id, school_name, broad_agency_type, accurate_agency_type), by = "dpi_true_id")
 
+    return(mke_rc)
+
     message("Choosing 'Private - Choice Students' report card type for private schools.")
-  } else if(private_type == "all") {
-    mke_rc <<- report_cards %>%
+
+  } else if (private_type == "all") {
+
+    mke_rc <- report_cards %>%
      filter(dpi_true_id %in% mke_schools$dpi_true_id & !(has_2_rc == 1 & report_card_type == "Private - Choice Students")) %>%
       left_join(., schools %>% select(dpi_true_id, school_name, broad_agency_type, accurate_agency_type), by = "dpi_true_id")
 
+    return(mke_rc)
+
     message("Choosing 'Private - All Students' report card type where available for private schools.")
+
   } else {
+
     stop("Did you specify 'choice' or 'all' for private_type?")
+
   }
 }
 
 #' @describeIn make_mke_schools Make a dataframe of Wisconsin schools' Report Card data.
 make_wi_rc <- function(exclude_milwaukee = TRUE, private_type = "choice") {
-  make_mke_schools()
 
-  if(exclude_milwaukee == TRUE) {
-    wi_rc <<- report_cards %>%
-        filter(!dpi_true_id %in% mke_schools$dpi_true_id)
+  mke_schools <- make_mke_schools()
+
+  if (exclude_milwaukee == TRUE) {
+
+    wi_rc <- report_cards %>%
+        filter(!dpi_true_id %in% mke_schools$dpi_true_id & (report_card_type != "Private - All Students" | is.na(report_card_type)))
+
+    return(wi_rc)
 
     message("Excluding Milwaukee schools.")
+
   } else {
-    wi_rc <<- report_cards
+    wi_rc <- report_cards %>%
+      filter(report_card_type != "Private - All Students" | is.na(report_card_type))
+
+    return(wi_rc)
 
     message("Including Milwaukee schools.")
+
   }
 
-  if(private_type == "choice") {
-    wi_rc <<- wi_rc %>%
+  if (private_type == "choice") {
+
+    wi_rc <- wi_rc %>%
       filter(report_card_type == "Private - Choice Students")
 
+    return(wi_rc)
+
     message("Choosing 'Private - Choice Students' report card type for private schools.")
-  } else if(private_type == "all") {
-    wi_rc <<- wi_rc %>%
+
+  } else if (private_type == "all")
+    {
+    wi_rc <- wi_rc %>%
     filter(report_card_type == "Private - All Students")
 
+    return(wi_rc)
+
     message("Choosing 'Private - All Students' report card type for private schools.")
+
   } else {
+
     stop("Did you specify 'choice' or 'all' for private_type?")
+
   }
 }
 
@@ -95,7 +125,7 @@ make_wi_rc <- function(exclude_milwaukee = TRUE, private_type = "choice") {
 #' @describeIn make_mke_schools Make a dataframe of overall enrollment of Milwaukee resident children.
 make_mke_enrollment <- function(agency_type = "broad") {
 
-  if(agency_type == "broad") {
+  if (agency_type == "broad") {
 
     mke_schools <- schools %>%
       filter(broad_agency_type != "Private" & city == "Milwaukee" & locale_description != "Suburb")
@@ -127,7 +157,8 @@ make_mke_enrollment <- function(agency_type = "broad") {
     mke_enrollment_bat <<- bind_rows(mke_enrollment_bat, mpcp_snsp)
 
 
-  } else if(agency_type == "accurate") {
+  } else if (agency_type == "accurate") {
+
     mke_schools <- schools %>%
       filter(broad_agency_type != "Private" & city == "Milwaukee" & locale_description != "Suburb")
 
@@ -156,7 +187,9 @@ make_mke_enrollment <- function(agency_type = "broad") {
     mke_enrollment_aat <<- bind_rows(mke_enrollment_aat, mpcp_snsp)
 
   } else {
+
     stop("Did you specify 'broad' or 'accurate' for agency_type?")
+
   }
 }
 
