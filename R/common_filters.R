@@ -126,8 +126,10 @@ make_mke_enrollment <- function(agency_type = "broad") {
 
   if (agency_type == "broad") {
 
-    mke_schools <- schools %>%
-      filter(broad_agency_type != "Private" & city == "Milwaukee" & locale_description != "Suburb")
+    mke_schools <- make_mke_schools()
+
+    mke_schools <- mke_schools %>%
+      filter(broad_agency_type != "Private")
 
     mke_rc <- enrollment %>%
       filter(dpi_true_id %in% mke_schools$dpi_true_id & group_by_value == "All Students") %>%
