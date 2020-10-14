@@ -23,16 +23,7 @@
 make_mke_schools <- function() {
 
   mke_schools_ <- schools %>%
-    filter((MPCP == 1 & county == "Milwaukee") |
-            (district_name == "Milwaukee" | (city == "Milwaukee" & accurate_agency_type != "Private" & locale_description != "Suburb")))
-
-  filter_test <- mke_schools_ %>%
-    filter(dpi_true_id == "0000_1712")
-
-  if (nrow(filter_test) != 1)
-  {
-    stop("Filtering error with MPCP schools outside of city limits. See Cristo Rey as example not included in mke_schools table.")
-  }
+    filter(milwaukee_indicator == 1)
 
   return(mke_schools_)
 
@@ -47,8 +38,14 @@ make_mke_rc <- function(private_type = "choice") {
 
   if (private_type == "choice") {
     mke_rc <- report_cards %>%
-      filter(dpi_true_id %in% mke_schools$dpi_true_id & (report_card_type != "Private - All Students" | is.na(report_card_type))) %>%
-      left_join(., schools %>% select(dpi_true_id, school_name, broad_agency_type, accurate_agency_type), by = "dpi_true_id")
+      filter(report_card_type != "Private - All Students" | is.na(report_card_type)) %>%
+      right_join(., mke_schools %>% select(dpi_true_id, school_name, broad_agency_type, accurate_agency_type, school_year)) %>%
+      select(school_year,
+             dpi_true_id,
+             school_name,
+             accurate_agency_type,
+             broad_agency_type,
+             everything())
 
     return(mke_rc)
 
@@ -57,8 +54,14 @@ make_mke_rc <- function(private_type = "choice") {
   } else if (private_type == "all") {
 
     mke_rc <- report_cards %>%
-     filter(dpi_true_id %in% mke_schools$dpi_true_id & !(has_2_rc == 1 & report_card_type == "Private - Choice Students")) %>%
-      left_join(., schools %>% select(dpi_true_id, school_name, broad_agency_type, accurate_agency_type), by = "dpi_true_id")
+     filter(!(has_2_rc == 1 & report_card_type == "Private - Choice Students")) %>%
+      right_join(., mke_schools %>% select(dpi_true_id, school_name, broad_agency_type, accurate_agency_type, school_year)) %>%
+      select(school_year,
+             dpi_true_id,
+             school_name,
+             accurate_agency_type,
+             broad_agency_type,
+             everything())
 
     return(mke_rc)
 
