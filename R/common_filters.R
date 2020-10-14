@@ -147,8 +147,8 @@ make_mke_enrollment <- function(agency_type = "broad") {
       filter(broad_agency_type != "Private")
 
     mke_rc <- enrollment %>%
-      filter(dpi_true_id %in% mke_schools$dpi_true_id & group_by_value == "All Students") %>%
-      left_join(., schools %>% select(dpi_true_id, school_name, broad_agency_type), by = "dpi_true_id")
+      filter(group_by_value == "All Students") %>%
+      right_join(., mke_schools %>% select(dpi_true_id, school_name, broad_agency_type, school_year))
 
     mke_enrollment_bat <- mke_rc %>%
       select(school_year, broad_agency_type, "total_enrollment" = student_count) %>%
@@ -170,7 +170,9 @@ make_mke_enrollment <- function(agency_type = "broad") {
              broad_agency_type = "MPCP/SNSP") %>%
       select(-c(MPCP, SNSP))
 
-    mke_enrollment_bat <<- bind_rows(mke_enrollment_bat, mpcp_snsp)
+    mke_enrollment_bat <- bind_rows(mke_enrollment_bat, mpcp_snsp)
+
+    return(mke_enrollment_bat)
 
 
   } else if (agency_type == "accurate") {
@@ -181,8 +183,8 @@ make_mke_enrollment <- function(agency_type = "broad") {
       filter(broad_agency_type != "Private")
 
     mke_rc <- enrollment %>%
-      filter(dpi_true_id %in% mke_schools$dpi_true_id & group_by_value == "All Students") %>%
-      left_join(., schools %>% select(dpi_true_id, school_name, accurate_agency_type), by = "dpi_true_id")
+      filter(group_by_value == "All Students") %>%
+      right_join(., mke_schools %>% select(dpi_true_id, school_name, accurate_agency_type, school_year))
 
     mke_enrollment_aat <- mke_rc %>%
       select(school_year, accurate_agency_type, "total_enrollment" = student_count) %>%
@@ -202,7 +204,9 @@ make_mke_enrollment <- function(agency_type = "broad") {
     mpcp_snsp <- left_join(mpcp, mke_snsp, by = "school_year") %>%
       pivot_longer(cols = 2:3, names_to = "accurate_agency_type", values_to = "total_enrollment")
 
-    mke_enrollment_aat <<- bind_rows(mke_enrollment_aat, mpcp_snsp)
+    mke_enrollment_aat <- bind_rows(mke_enrollment_aat, mpcp_snsp)
+
+    return(mke_enrollment_aat)
 
   } else {
 
