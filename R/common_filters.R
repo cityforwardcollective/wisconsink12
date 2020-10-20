@@ -221,22 +221,64 @@ make_mke_enrollment <- function(agency_type = "broad") {
 #' @describeIn est_subgroup_enrollment Estimate Subgroup enrollment at the school-level based on Report Card numbers.
 est_subgroup_enrollment <- function(private_type = "choice", mke = TRUE) {
 
-  race <- c("per_am_in",
-            "per_asian",
-            "per_b_aa",
-            "per_hisp_lat",
-            "per_nh_opi",
-            "per_white",
-            "per_tom")
+  if (private_type == "choice") {
+    race <- c("per_am_in",
+              "per_asian",
+              "per_b_aa",
+              "per_hisp_lat",
+              "per_nh_opi",
+              "per_white",
+              "per_tom")
 
-  report_cards %>%
-    filter(report_card_type != "Private - All Students" | is.na(report_card_type)) %>%
-    select(dpi_true_id, school_year, school_enrollment, starts_with("per")) %>%
-    pivot_longer(cols = starts_with("per"), names_to = "group", values_to = "percent") %>%
-    mutate(est_enrollment = school_enrollment * percent)
+    subgroup_enr <- report_cards %>%
+      filter(report_card_type != "Private - All Students" | is.na(report_card_type)) %>%
+      select(dpi_true_id, school_year, school_enrollment, starts_with("per")) %>%
+      pivot_longer(cols = starts_with("per"), names_to = "group", values_to = "percent") %>%
+      mutate(est_enrollment = school_enrollment * percent,
+             group = str_replace_all(group, "per", "est")) %>%
+      select(dpi_true_id,
+             school_year,
+             group,
+             est_enrollment) %>%
+      left_join(., schools %>% select(dpi_true_id, school_year, accurate_agency_type, broad_agency_type),
+                by = c("dpi_true_id", "school_year"))
 
+    return(subgroup_enr)
 
-  message("Choosing 'Private - Choice Students' report card type for private schools.")
+    message("Choosing 'Private - Choice Students' report card type for private schools.")
+
+  } else if (private_type == "all") {
+
+    race <- c("per_am_in",
+              "per_asian",
+              "per_b_aa",
+              "per_hisp_lat",
+              "per_nh_opi",
+              "per_white",
+              "per_tom")
+
+    subgroup_enr <- report_cards %>%
+      filter(!(has_2_rc == 1 & report_card_type == "Private - Choice Students")) %>%
+      select(dpi_true_id, school_year, school_enrollment, starts_with("per")) %>%
+      pivot_longer(cols = starts_with("per"), names_to = "group", values_to = "percent") %>%
+      mutate(est_enrollment = school_enrollment * percent,
+             group = str_replace_all(group, "per", "est")) %>%
+      select(dpi_true_id,
+             school_year,
+             group,
+             est_enrollment) %>%
+      left_join(., schools %>% select(dpi_true_id, school_year, accurate_agency_type, broad_agency_type),
+                by = c("dpi_true_id", "school_year"))
+
+    return(subgroup_enr)
+
+    message("Choosing 'Private - All Students' report card type for private schools.")
+  } else {
+
+    stop("Did you specify 'choice' or 'all' for private_type?")
+
+  }
+
 }
 
 
