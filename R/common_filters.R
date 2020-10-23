@@ -218,7 +218,7 @@ make_mke_enrollment <- function(agency_type = "broad") {
 
 # Estimate Subgroup Enrollment =================================================================
 
-#' @describeIn est_subgroup_enrollment Estimate Subgroup enrollment at the school-level based on Report Card numbers.
+#' @describeIn est_subgroup_enrollment Estimate subgroup enrollment at the school-level based on Report Card numbers.
 est_subgroup_enrollment <- function(private_type = "choice", mke = TRUE) {
 
   if (private_type == "choice") {
