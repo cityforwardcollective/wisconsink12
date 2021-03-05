@@ -255,7 +255,7 @@ est_subgroup_enrollment <- function(private_type = "choice") {
 
     private <- report_cards %>%
       left_join(., schools %>% select(school_year, dpi_true_id, accurate_agency_type)) %>%
-      filter(report_card_type == "Private - Choice Students" & accurate_agency_type == "Private") %>%
+      filter((report_card_type == "Private - Choice Students" | is.na(report_card_type)) & accurate_agency_type == "Private") %>%
       select(dpi_true_id, school_year, school_enrollment, starts_with("per")) %>%
       pivot_longer(cols = starts_with("per"), names_to = "group_by_value", values_to = "percent") %>%
       mutate(est_enrollment = school_enrollment * percent,
