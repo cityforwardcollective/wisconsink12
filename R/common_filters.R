@@ -229,8 +229,12 @@ est_subgroup_enrollment <- function(private_type = "choice") {
             "count_white",
             "count_tom")
 
-  pub <- enrollment %>%
-    filter(!group_by %in% c("All Students", "Gender", "Grade Level", "Migrant Status", "Primary Disability")) %>%
+  e <- enrollment %>%
+    filter(!group_by %in% c("All Students",
+                            "Gender",
+                            "Grade Level",
+                            "Migrant Status",
+                            "Primary Disability")) %>%
     mutate(group_by = case_when(group_by == "Economic Status" ~ "economic_status",
                                 group_by == "ELL Status" ~ "english_proficiency",
                                 group_by == "Race/Ethnicity" ~ "race_ethnicity",
@@ -246,10 +250,50 @@ est_subgroup_enrollment <- function(private_type = "choice") {
                                       group_by_value == "Amer Indian" ~ "count_am_in",
                                       group_by_value == "Pacific Isle" ~ "count_nh_opi",
                                       group_by_value == "Unknown" ~ "count_unknown",
+                                      str_detect(group_by_value, "Suppressed") ~ "suppressed",
                                       TRUE ~ "Drop")) %>%
-    filter(group_by_value != "Drop") %>%
+    # Filter out the nots (not ED, not SwD, etc)
+    filter(group_by_value != "Drop")
+
+  suppressed <- e %>%
+    filter(group_by_value == "suppressed") %>%
+    select(1:3)
+
+  pub <- e %>%
+    filter(group_by_value != "suppressed") %>%
     left_join(., schools %>% select(dpi_true_id, school_year, accurate_agency_type, broad_agency_type),
               by = c("dpi_true_id", "school_year"))
+
+  pub_ed <- report_cards %>%
+    left_join(., schools %>% select(school_year, dpi_true_id, accurate_agency_type)) %>%
+    filter(accurate_agency_type != "Private") %>%
+    select(school_year, dpi_true_id, school_enrollment, per_ed) %>%
+    pivot_longer(cols = starts_with("per"), names_to = "group_by_value", values_to = "percent") %>%
+    mutate(est_enrollment = school_enrollment * percent,
+           group_by_value = str_replace_all(group_by_value, "per", "count"),
+           group_by = case_when(group_by_value %in% race ~ "race_ethnicity",
+                                group_by_value == "count_ed" ~ "economic_status",
+                                group_by_value == "count_lep" ~ "english_proficiency",
+                                group_by_value == "count_choice" ~ "choice",
+                                group_by_value == "count_open" ~ "open_enrollment",
+                                group_by_value == "count_swd" ~ "students_w_disabilities")) %>%
+    semi_join(., suppressed) %>%
+    select(school_year,
+           dpi_true_id,
+           group_by_value,
+           est_enrollment) %>%
+    left_join(., schools %>% select(dpi_true_id, school_year, accurate_agency_type, broad_agency_type),
+              by = c("dpi_true_id", "school_year")) %>%
+    mutate(group_by = "economic_status") %>%
+    select(school_year,
+           dpi_true_id,
+           accurate_agency_type,
+           broad_agency_type,
+           group_by,
+           group_by_value,
+           student_count = est_enrollment)
+
+  p <- bind_rows(pub, pub_ed)
 
   if (private_type == "choice") {
 
@@ -282,7 +326,7 @@ est_subgroup_enrollment <- function(private_type = "choice") {
 
 
 
-    subgroup_enr <- bind_rows(private, pub)
+    subgroup_enr <- bind_rows(private, p)
 
     return(subgroup_enr)
 
@@ -317,7 +361,7 @@ est_subgroup_enrollment <- function(private_type = "choice") {
              group_by_value,
              student_count = est_enrollment)
 
-    subgroup_enr <- bind_rows(private, pub)
+    subgroup_enr <- bind_rows(private, p)
 
     return(subgroup_enr)
 
