@@ -262,7 +262,8 @@ est_subgroup_enrollment <- function(private_type = "choice") {
   pub <- e %>%
     filter(group_by_value != "suppressed") %>%
     left_join(., schools %>% select(dpi_true_id, school_year, accurate_agency_type, broad_agency_type),
-              by = c("dpi_true_id", "school_year"))
+              by = c("dpi_true_id", "school_year")) %>%
+    mutate(is_estimate = 0)
 
   pub_ed <- report_cards %>%
     left_join(., schools %>% select(school_year, dpi_true_id, accurate_agency_type)) %>%
@@ -284,14 +285,16 @@ est_subgroup_enrollment <- function(private_type = "choice") {
            est_enrollment) %>%
     left_join(., schools %>% select(dpi_true_id, school_year, accurate_agency_type, broad_agency_type),
               by = c("dpi_true_id", "school_year")) %>%
-    mutate(group_by = "economic_status") %>%
+    mutate(group_by = "economic_status",
+           is_estimate = 1) %>%
     select(school_year,
            dpi_true_id,
            accurate_agency_type,
            broad_agency_type,
            group_by,
            group_by_value,
-           student_count = est_enrollment)
+           student_count = est_enrollment,
+           is_estimate)
 
   p <- bind_rows(pub, pub_ed)
 
@@ -315,14 +318,16 @@ est_subgroup_enrollment <- function(private_type = "choice") {
                                   group_by_value == "count_lep" ~ "english_proficiency",
                                   group_by_value == "count_choice" ~ "choice",
                                   group_by_value == "count_open" ~ "open_enrollment",
-                                  group_by_value == "count_swd" ~ "students_w_disabilities")) %>%
+                                  group_by_value == "count_swd" ~ "students_w_disabilities"),
+             is_estimate = 1) %>%
       select(school_year,
              dpi_true_id,
              accurate_agency_type,
              broad_agency_type,
              group_by,
              group_by_value,
-             student_count = est_enrollment)
+             student_count = est_enrollment,
+             is_estimate)
 
 
 
@@ -352,14 +357,16 @@ est_subgroup_enrollment <- function(private_type = "choice") {
                                   group_by_value == "count_lep" ~ "english_proficiency",
                                   group_by_value == "count_choice" ~ "choice",
                                   group_by_value == "count_open" ~ "open_enrollment",
-                                  group_by_value == "count_swd" ~ "students_w_disabilities")) %>%
+                                  group_by_value == "count_swd" ~ "students_w_disabilities"),
+             is_estimate = 1) %>%
       select(school_year,
              dpi_true_id,
              accurate_agency_type,
              broad_agency_type,
              group_by,
              group_by_value,
-             student_count = est_enrollment)
+             student_count = est_enrollment,
+             is_estimate)
 
     subgroup_enr <- bind_rows(private, p)
 
