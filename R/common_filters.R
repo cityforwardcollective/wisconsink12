@@ -20,10 +20,29 @@
 #' @export est_subgroup_enrollment
 
 # School Lists =================================================================
-make_mke_schools <- function() {
+make_mke_schools <- function(school_years = "all") {
 
-  mke_schools_ <- schools %>%
-    filter(milwaukee_indicator == 1)
+  # Initialize vector of potential school years
+  school_years_ <- unique(schools$school_year)
+
+  # Make sure all school_years values are valid
+
+  if (sum(school_years %in% c(school_years_, "all")) != length(school_years)) {
+    stop("Please enter a vector of valid school years.")
+  }
+
+  # Filter schools for relevant school years
+
+  if (length(school_years) > 1) {
+    mke_schools_ <- schools %>%
+      filter(milwaukee_indicator == 1 & school_year %in% school_years)
+  } else if (school_years == "all") {
+    mke_schools_ <- schools %>%
+      filter(milwaukee_indicator == 1)
+  } else {
+    mke_schools_ <- schools %>%
+      filter(milwaukee_indicator == 1 & school_year == school_years)
+  }
 
   return(mke_schools_)
 
