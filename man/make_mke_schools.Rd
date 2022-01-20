@@ -7,7 +7,7 @@
 \alias{make_mke_enrollment}
 \title{Make common dataframes}
 \usage{
-make_mke_schools()
+make_mke_schools(school_years = "all")
 
 make_mke_rc(private_type = "choice")
 

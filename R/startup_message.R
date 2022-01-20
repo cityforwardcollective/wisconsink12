@@ -1,6 +1,7 @@
 # Startup message when package is attached.
 
 .tables <- load("data/school_data.RData")
+.tables <- .tables[order(.tables)]
 
 .onAttach <- function(libname, pkgname) {
   packageStartupMessage(
