@@ -40,9 +40,9 @@ The data is organized in a relational database structure, where each table has a
 The plan is to submit the `wisconsink12` package to CRAN, but for now it must be downloaded from City Forward Collective's [GitHub repository](https://github.com/cityforwardcollective).  This can be achieved with the following code.
 
 ```{r eval=FALSE}
-# The devtools package is required
+# The remotes package is required
 # to download from GitHub.
-# install.packages("devtools")
+# install.packages("remotes") if you haven't already
 
 remotes::install_gitub("cityforwardcollective/wisconsink12")
 ```

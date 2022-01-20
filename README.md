@@ -52,9 +52,9 @@ repository](https://github.com/cityforwardcollective). This can be
 achieved with the following code.
 
 ``` r
-# The devtools package is required
+# The remotes package is required
 # to download from GitHub.
-# install.packages("devtools")
+# install.packages("remotes") if you haven't already
 
 remotes::install_gitub("cityforwardcollective/wisconsink12")
 ```
