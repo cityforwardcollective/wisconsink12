@@ -1,7 +1,7 @@
 Package: wisconsink12
 Type: Package
 Title: Provides access to publicly available Wisconsin K12 schools data
-Version: 0.1.0
+Version: 0.1.0.9000
 Author: Spencer Schien
 Maintainer: Spencer Schien <spencer.schien@cityforwardcollective.org>
 Description: The `wisconsink12` package provides access to Wisconsin K12 school data in a cleaned format that facilitates analysis.
