@@ -1,11 +1,16 @@
 Package: wisconsink12
 Type: Package
-Title: Provides access to publicly available Wisconsin K12 schools data
+Title: Easy Access to Wisconsin K12 School Data
 Version: 0.1.0.9000
-Author: Spencer Schien
-Maintainer: Spencer Schien <spencer.schien@cityforwardcollective.org>
+Authors@R: 
+    c(person(given = "Spencer",
+             family = "Schien",
+             role = c("aut", "cre"),
+             email = "spencer.schien@cityforwardcollective.org"),
+      person(given = "City Forward Collective",
+             role = c("cph", "fnd")))
 Description: The `wisconsink12` package provides access to Wisconsin K12 school data in a cleaned format that facilitates analysis.
-License: What license is it under?
+License: CC0
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.2
