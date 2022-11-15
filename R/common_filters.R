@@ -251,12 +251,15 @@ est_subgroup_enrollment <- function(private_type = "choice") {
   e <- enrollment %>%
     filter(!group_by %in% c("All Students",
                             "Gender",
+                            "GENDER_ALT",
                             "Grade Level",
+                            "GRADE_ALT",
                             "Migrant Status",
                             "Primary Disability")) %>%
     mutate(group_by = case_when(group_by == "Economic Status" ~ "economic_status",
                                 group_by == "ELL Status" ~ "english_proficiency",
                                 group_by == "Race/Ethnicity" ~ "race_ethnicity",
+                                group_by == "RACE_ALT" ~ "race_ethnicity",
                                 group_by == "Disability Status" ~ "students_w_disabilities"),
            group_by_value = case_when(group_by_value == "SwD" ~ "count_swd",
                                       group_by_value == "Econ Disadv" ~ "count_ed",

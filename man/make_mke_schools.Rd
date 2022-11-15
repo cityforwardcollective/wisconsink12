@@ -29,10 +29,10 @@ such as city of Milwaukee schools and their report cards.
 }
 \section{Functions}{
 \itemize{
-\item \code{make_mke_rc}: Make a dataframe of Milwaukee schools' Report Card data.
+\item \code{make_mke_rc()}: Make a dataframe of Milwaukee schools' Report Card data.
 
-\item \code{make_wi_rc}: Make a dataframe of Wisconsin schools' Report Card data.
+\item \code{make_wi_rc()}: Make a dataframe of Wisconsin schools' Report Card data.
 
-\item \code{make_mke_enrollment}: Make a dataframe of overall enrollment of Milwaukee resident children.
+\item \code{make_mke_enrollment()}: Make a dataframe of overall enrollment of Milwaukee resident children.
+
 }}
-
