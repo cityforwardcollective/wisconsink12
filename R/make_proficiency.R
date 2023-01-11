@@ -1,13 +1,7 @@
-#' Make common dataframes
+#' Get school-level proficiency data
 #'
-#' Creates commonly-needed dataframes of \code{wisconsink12} data,
-#' such as city of Milwaukee schools and their report cards.
+#' Creates a dataframe of school-level proficiency for all tested grades.
 #'
-#' @param private_type Select which type of Report Card to be included for choice schools.
-#' Options are 'choice' for the 'Private - Choice Students' and 'all' for 'Private - All Students'
-#' Report Card types.
-#' @param exclude_milwaukee Logical. If TRUE (default value), Milwaukee schools will be
-#' excluded from \code{wi_rc}.
 #'
 #' @import dplyr
 #' @import tidyr

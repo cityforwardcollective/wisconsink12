@@ -2,19 +2,10 @@
 % Please edit documentation in R/make_proficiency.R
 \name{make_proficiency}
 \alias{make_proficiency}
-\title{Make common dataframes}
+\title{Get school-level proficiency data}
 \usage{
 make_proficiency()
 }
-\arguments{
-\item{private_type}{Select which type of Report Card to be included for choice schools.
-Options are 'choice' for the 'Private - Choice Students' and 'all' for 'Private - All Students'
-Report Card types.}
-
-\item{exclude_milwaukee}{Logical. If TRUE (default value), Milwaukee schools will be
-excluded from \code{wi_rc}.}
-}
 \description{
-Creates commonly-needed dataframes of \code{wisconsink12} data,
-such as city of Milwaukee schools and their report cards.
+Creates a dataframe of school-level proficiency for all tested grades.
 }
