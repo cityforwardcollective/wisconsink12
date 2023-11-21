@@ -6,3 +6,4 @@ imports/*
 *.sqlite
 .httr-oauth-salesforcer
 parking_lot/*
+*DS_Store*
