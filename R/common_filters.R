@@ -101,8 +101,8 @@ make_wi_rc <- function(exclude_milwaukee = TRUE, private_type = "choice") {
   if (exclude_milwaukee == TRUE) {
 
     wi_rc <- report_cards %>%
-      anti_join(., mke_schools %>% select(dpi_true_id, school_year)) %>%
       right_join(., schools %>% select(dpi_true_id, school_name, broad_agency_type, accurate_agency_type, school_year)) %>%
+      anti_join(., mke_schools %>% select(dpi_true_id, school_year)) %>%
       select(school_year,
              dpi_true_id,
              school_name,
