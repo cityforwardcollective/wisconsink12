@@ -102,7 +102,7 @@ make_wi_rc <- function(exclude_milwaukee = TRUE, private_type = "choice") {
 
     wi_rc <- report_cards %>%
       right_join(., schools %>%
-                   filter(!(accurate_agency_type == "Private" & choice_indicator == 1)) |>
+                   filter(!(accurate_agency_type == "Private" & choice_indicator == 0)) |>
                    select(dpi_true_id, school_name, broad_agency_type, accurate_agency_type, school_year)) %>%
       anti_join(., mke_schools %>% select(dpi_true_id, school_year)) %>%
       select(school_year,
@@ -118,7 +118,7 @@ make_wi_rc <- function(exclude_milwaukee = TRUE, private_type = "choice") {
 
     wi_rc <- report_cards %>%
       right_join(., schools %>%
-                   filter(!(accurate_agency_type == "Private" & choice_indicator == 1)) |>
+                   filter(!(accurate_agency_type == "Private" & choice_indicator == 0)) |>
                    select(dpi_true_id, school_name, broad_agency_type, accurate_agency_type, school_year)) %>%
       select(school_year,
              dpi_true_id,
