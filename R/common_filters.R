@@ -187,9 +187,16 @@ make_mke_enrollment <- function(agency_type = "broad") {
       group_by(school_year) %>%
       summarise(MPCP = sum(MPCP_count, na.rm = TRUE))
 
-    mke_snsp <- choice_counts %>%
-      filter(MPCP_count > 0) %>%
-      group_by(school_year) %>%
+    # changed to limit count to MKE-designated schools
+    # mke_snsp <- choice_counts %>%
+    #   filter(MPCP_count > 0) %>%
+    #   group_by(school_year) %>%
+    #   summarise(SNSP = sum(SNSP_count, na.rm = TRUE))
+
+    mke_snsp <- mke_schools |>
+      left_join(choice_counts |>
+                  select(-school_name)) |>
+      group_by(school_year) |>
       summarise(SNSP = sum(SNSP_count, na.rm = TRUE))
 
     mpcp_snsp <- left_join(mpcp, mke_snsp, by = "school_year") %>%
@@ -223,9 +230,16 @@ make_mke_enrollment <- function(agency_type = "broad") {
       group_by(school_year) %>%
       summarise(MPCP = sum(MPCP_count, na.rm = TRUE))
 
-    mke_snsp <- choice_counts %>%
-      filter(MPCP_count > 0) %>%
-      group_by(school_year) %>%
+    # changed to limit count to MKE-designated schools
+    # mke_snsp <- choice_counts %>%
+    #   filter(MPCP_count > 0) %>%
+    #   group_by(school_year) %>%
+    #   summarise(SNSP = sum(SNSP_count, na.rm = TRUE))
+
+    mke_snsp <- mke_schools |>
+      left_join(choice_counts |>
+                  select(-school_name)) |>
+      group_by(school_year) |>
       summarise(SNSP = sum(SNSP_count, na.rm = TRUE))
 
     mpcp_snsp <- left_join(mpcp, mke_snsp, by = "school_year") %>%
