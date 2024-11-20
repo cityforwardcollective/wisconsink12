@@ -168,9 +168,9 @@ make_mke_enrollment <- function(agency_type = "broad") {
 
   if (agency_type == "broad") {
 
-    mke_schools <- make_mke_schools()
+    mke_schools_all <- make_mke_schools()
 
-    mke_schools <- mke_schools %>%
+    mke_schools <- mke_schools_all %>%
       filter(broad_agency_type != "Private")
 
     mke_rc <- enrollment %>%
@@ -193,7 +193,7 @@ make_mke_enrollment <- function(agency_type = "broad") {
     #   group_by(school_year) %>%
     #   summarise(SNSP = sum(SNSP_count, na.rm = TRUE))
 
-    mke_snsp <- mke_schools |>
+    mke_snsp <- mke_schools_all |>
       left_join(choice_counts |>
                   select(-school_name)) |>
       group_by(school_year) |>
@@ -211,9 +211,9 @@ make_mke_enrollment <- function(agency_type = "broad") {
 
   } else if (agency_type == "accurate") {
 
-    mke_schools <- make_mke_schools()
+    mke_schools_all <- make_mke_schools()
 
-    mke_schools <- mke_schools %>%
+    mke_schools <- mke_schools_all %>%
       filter(broad_agency_type != "Private")
 
     mke_rc <- enrollment %>%
@@ -236,7 +236,7 @@ make_mke_enrollment <- function(agency_type = "broad") {
     #   group_by(school_year) %>%
     #   summarise(SNSP = sum(SNSP_count, na.rm = TRUE))
 
-    mke_snsp <- mke_schools |>
+    mke_snsp <- mke_schools_all |>
       left_join(choice_counts |>
                   select(-school_name)) |>
       group_by(school_year) |>
